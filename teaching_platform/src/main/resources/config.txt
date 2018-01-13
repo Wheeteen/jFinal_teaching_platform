@@ -1,0 +1,4 @@
+jdbcUrl = jdbc:mysql://localhost/teaching_platform?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user = root
+password = 
+devMode = true
