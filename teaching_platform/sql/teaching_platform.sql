@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-01-13 16:28:35
+-- Generation Time: 2018-01-14 12:45:06
 -- 服务器版本： 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -23,13 +23,41 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL,
+  `content` text COMMENT '评论内容',
+  `creat_time` datetime(6) DEFAULT NULL COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `course`
 --
 
 CREATE TABLE `course` (
   `cour_id` int(11) NOT NULL,
   `course_name` varchar(50) NOT NULL COMMENT '课程名称',
-  `introduction` text COMMENT '课程简介'
+  `introduction` text COMMENT '课程简介',
+  `tea_id` int(11) NOT NULL COMMENT '该老师创建的课程',
+  `create_time` datetime NOT NULL,
+  `update_time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `file_info`
+--
+
+CREATE TABLE `file_info` (
+  `id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `filename` varchar(40) NOT NULL,
+  `create_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -81,9 +109,24 @@ INSERT INTO `status_type` (`id`, `status`) VALUES
 
 CREATE TABLE `stu_course` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `course_id` int(11) NOT NULL,
-  `type` int(11) NOT NULL
+  `stu_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `stu_info`
+--
+
+CREATE TABLE `stu_info` (
+  `id` int(11) NOT NULL,
+  `username` varchar(40) DEFAULT NULL COMMENT '用户名',
+  `password` varchar(35) NOT NULL,
+  `stu_id` int(30) NOT NULL,
+  `status` int(11) NOT NULL,
+  `imgUrl` varchar(50) DEFAULT NULL COMMENT '用户头像',
+  `email` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -109,24 +152,24 @@ CREATE TABLE `submit_task` (
 CREATE TABLE `task` (
   `task_id` int(11) NOT NULL,
   `course_id` int(11) NOT NULL,
-  `creat_time` datetime(6) NOT NULL COMMENT '创建作业时间',
-  `content` varchar(80) NOT NULL COMMENT '作业内容',
-  `user_id` int(11) NOT NULL
+  `create_time` datetime(6) NOT NULL COMMENT '创建作业时间',
+  `content` text NOT NULL COMMENT '作业内容'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- 表的结构 `user_info`
+-- 表的结构 `tea_info`
 --
 
-CREATE TABLE `user_info` (
+CREATE TABLE `tea_info` (
   `id` int(11) NOT NULL,
-  `username` varchar(40) DEFAULT NULL COMMENT '用户名',
-  `password` varchar(35) NOT NULL,
-  `user_id` int(30) NOT NULL,
-  `type` int(11) NOT NULL,
-  `status` int(11) NOT NULL
+  `tea_id` int(11) NOT NULL COMMENT '老师的id',
+  `username` varchar(45) DEFAULT NULL,
+  `password` varchar(40) NOT NULL,
+  `status` int(11) NOT NULL,
+  `imgUrl` varchar(50) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -134,10 +177,24 @@ CREATE TABLE `user_info` (
 --
 
 --
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `course`
 --
 ALTER TABLE `course`
-  ADD PRIMARY KEY (`cour_id`);
+  ADD PRIMARY KEY (`cour_id`),
+  ADD KEY `fk_tea_id` (`tea_id`);
+
+--
+-- Indexes for table `file_info`
+--
+ALTER TABLE `file_info`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `index_course_id` (`course_id`) USING BTREE;
 
 --
 -- Indexes for table `role_type`
@@ -156,9 +213,16 @@ ALTER TABLE `status_type`
 --
 ALTER TABLE `stu_course`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_course_id` (`course_id`),
-  ADD KEY `fk_user_id` (`user_id`),
-  ADD KEY `fk_type` (`type`);
+  ADD KEY `index_course_id` (`course_id`) USING BTREE,
+  ADD KEY `index_stu_id` (`stu_id`) USING BTREE;
+
+--
+-- Indexes for table `stu_info`
+--
+ALTER TABLE `stu_info`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `index_stu_id` (`stu_id`) USING BTREE,
+  ADD KEY `fk_status` (`status`);
 
 --
 -- Indexes for table `submit_task`
@@ -172,16 +236,16 @@ ALTER TABLE `submit_task`
 -- Indexes for table `task`
 --
 ALTER TABLE `task`
-  ADD PRIMARY KEY (`task_id`);
+  ADD PRIMARY KEY (`task_id`),
+  ADD KEY `index_course_id` (`course_id`) USING BTREE;
 
 --
--- Indexes for table `user_info`
+-- Indexes for table `tea_info`
 --
-ALTER TABLE `user_info`
+ALTER TABLE `tea_info`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id` (`user_id`),
-  ADD KEY `type-id` (`type`),
-  ADD KEY `fk_status` (`status`);
+  ADD UNIQUE KEY `index_tea_id` (`tea_id`) USING BTREE,
+  ADD KEY `fk_status_id` (`status`);
 
 --
 -- 在导出的表使用AUTO_INCREMENT
@@ -192,6 +256,11 @@ ALTER TABLE `user_info`
 --
 ALTER TABLE `course`
   MODIFY `cour_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- 使用表AUTO_INCREMENT `file_info`
+--
+ALTER TABLE `file_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- 使用表AUTO_INCREMENT `role_type`
 --
@@ -208,40 +277,48 @@ ALTER TABLE `status_type`
 ALTER TABLE `stu_course`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- 使用表AUTO_INCREMENT `stu_info`
+--
+ALTER TABLE `stu_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- 使用表AUTO_INCREMENT `task`
 --
 ALTER TABLE `task`
   MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- 使用表AUTO_INCREMENT `user_info`
+-- 使用表AUTO_INCREMENT `tea_info`
 --
-ALTER TABLE `user_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `tea_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- 限制导出的表
 --
 
 --
--- 限制表 `stu_course`
+-- 限制表 `course`
 --
-ALTER TABLE `stu_course`
-  ADD CONSTRAINT `fk_course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`cour_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_type` FOREIGN KEY (`type`) REFERENCES `role_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `course`
+  ADD CONSTRAINT `fk_tea_id` FOREIGN KEY (`tea_id`) REFERENCES `stu_info` (`id`);
+
+--
+-- 限制表 `stu_info`
+--
+ALTER TABLE `stu_info`
+  ADD CONSTRAINT `fk_status` FOREIGN KEY (`status`) REFERENCES `status_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- 限制表 `submit_task`
 --
 ALTER TABLE `submit_task`
-  ADD CONSTRAINT `fk_stu_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_task_id` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_stu_id` FOREIGN KEY (`user_id`) REFERENCES `stu_info` (`id`),
+  ADD CONSTRAINT `fk_task_id` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`);
 
 --
--- 限制表 `user_info`
+-- 限制表 `tea_info`
 --
-ALTER TABLE `user_info`
-  ADD CONSTRAINT `fk_status` FOREIGN KEY (`status`) REFERENCES `status_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `type-id` FOREIGN KEY (`type`) REFERENCES `role_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `tea_info`
+  ADD CONSTRAINT `fk_status_id` FOREIGN KEY (`status`) REFERENCES `status_type` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
