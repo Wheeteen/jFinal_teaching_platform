@@ -11,13 +11,21 @@ public class BaseUser<M extends BaseUser<M>> extends Model<M> implements IBean {
 	public java.lang.Integer getId() {
 		return getInt("id");
 	}
-	public M setUserId(java.lang.Integer user_id) {
-		set("user_id", user_id);
+	public M setStuId(java.lang.Integer stu_id) {
+		set("stu_id", stu_id);
 		return (M)this;
 	}
 
-	public java.lang.Integer getUserId() {
-		return getInt("user_id");
+	public java.lang.Integer getStuId() {
+		return getInt("stu_id");
+	}
+	public M setTeaId(java.lang.Integer tea_id) {
+		set("tea_id", tea_id);
+		return (M)this;
+	}
+
+	public java.lang.Integer getTeaId() {
+		return getInt("tea_id");
 	}
 
 	public M setUsername(java.lang.String username) {
@@ -37,16 +45,9 @@ public class BaseUser<M extends BaseUser<M>> extends Model<M> implements IBean {
 	public java.lang.String getPassword() {
 		return getStr("password");
 	}
-	//type类型：1是学生，2是老师，3是管理员
-	public M setType(java.lang.Integer type) {
-		set("type", type);
-		return (M)this;
-	}
-
-	public java.lang.Integer getType() {
-		return getInt("type");
-	}
-	//status类型： 1是正常，2是交换生，3是休学，4是出国
+	//type:1 student 2 teacher 3 administor
+	
+	//status 1 normal 2 exchange student 3 absence from school 4 go aboard
 	public M setStatus(java.lang.Integer status) {
 		set("status", status);
 		return (M)this;
@@ -54,5 +55,23 @@ public class BaseUser<M extends BaseUser<M>> extends Model<M> implements IBean {
 
 	public java.lang.Integer getStatus() {
 		return getInt("status");
+	}
+	
+	public M setImgUrl(java.lang.String setImgUrl) {
+		set("imgUrl", setImgUrl);
+		return (M)this;
+	}
+
+	public java.lang.String getImgUrl() {
+		return getStr("imgUrl");
+	}
+
+	public M setEmail(java.lang.String email) {
+		set("email", email);
+		return (M)this;
+	}
+
+	public java.lang.String getEmail() {
+		return getStr("email");
 	}
 }

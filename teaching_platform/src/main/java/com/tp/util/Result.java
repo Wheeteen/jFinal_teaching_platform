@@ -1,9 +1,13 @@
 package com.tp.util;
 
+import java.util.HashMap;
+
 public class Result<T> {
 	private boolean success;
 	private T data = null;
 	private String error = null;
+	private HashMap<String, Object> message = null;
+	
 	
 	public Result(boolean success, T data){
 		this.success = success;
@@ -32,7 +36,12 @@ public class Result<T> {
         this.error = error;
     }
 
-    public boolean isSuccess() {
+    public Result(HashMap<String, Object> hashData) {
+		// TODO Auto-generated constructor stub
+    	this.success = true;
+    	this.message = hashData;
+	}
+	public boolean isSuccess() {
         return success;
     }
     public void setSuccess(boolean success) {
@@ -54,4 +63,11 @@ public class Result<T> {
     public void setError(String error) {
         this.error = error;
     }
+	public HashMap<String, Object> getMessage() {
+		return message;
+	}
+	public void setMessage(HashMap<String, Object> message) {
+		this.message = message;
+	}
+    
 }

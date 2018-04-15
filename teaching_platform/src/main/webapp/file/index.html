@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../js/jquery-1.4.4.min.js"></script>
+<script src="../js/jquery-form.min.js"></script>
+</head>
+<body>
+	<form method="post" action="file/upload" enctype="multipart/form-data" id="fileForm">  
+	    <input type="file" name="file">  
+	    <!--  <input type="hidden" name="jwt" value="eyJhbGciOiJIUzUxMiJ9.eyJjbGFzc19pZCI6MCwiZ3JhZGUiOjAsInRhc2tfaWQiOjAsImlkIjo2LCJ0eXBlIjoxLCJleHAiOjE1MjEzNjc3OTd9.dJJBOM7XbZYLLzKyJP-soc0i04yloLWZYBI1L2YtCRq4-Jm31ExV6SBWvpydx9fGhAGZTvjnRh1xUbVJsAB5mA">-->
+	    <input type="submit" value="上传">
+	    
+	</form>
+
+	<h1>Hello world</h1>
+	<p id="clickBtn">请点击这里</p>
+	
+	<script type="text/javascript">
+	 $(function () {
+		 
+         $("#fileForm").ajaxForm({
+            success: function (data) {
+                console.log(data)
+            },  
+            error: function (error) { console.log(data)},
+            dataType: "json"
+        }); 
+        
+         /** $("#clickBtn").click(function(){
+          $.ajax({
+        	url: "file/teaUploadFile",
+        	type: 'GET',
+        	beforeSend: function (xhr) {
+       	        // xhr.setRequestHeader("jwt", "eyJhbGciOiJIUzUxMiJ9.eyJjbGFzc19pZCI6MCwiZ3JhZGUiOjAsInRhc2tfaWQiOjAsImlkIjo2LCJ0eXBlIjoxLCJleHAiOjE1MjE5NTQxOTB9.FAk7FrYwq-QqfFhSPnavNosCQa4qbXBEJnZXG_OpaTOJzutGRWBu7k_rNGO8CBUeXjyGf9jK0OIsMcx4jt_Auw");
+       	    },
+	       	 success: function (data) {
+	             console.log(data);
+	         }
+          }) */
+        })
+    }); 
+    
+	</script>
+</body>
+</html>

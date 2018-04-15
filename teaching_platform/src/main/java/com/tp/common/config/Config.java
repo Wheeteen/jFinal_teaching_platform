@@ -14,6 +14,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
 import com.tp.common.config.route.BackendRoutes;
 import com.tp.index.index;
+import com.tp.interceptor.LoginInterceptor;
 import com.tp.model._MappingKit;
 
 public class Config extends JFinalConfig {
@@ -27,8 +28,8 @@ public class Config extends JFinalConfig {
 		PropKit.use("config.txt");
 		arg.setDevMode(PropKit.getBoolean("devMode", false));
 		arg.setJsonFactory(new MixedJsonFactory());
-		//Ä¬ÈÏÊÇ"devMode",ÈôÃ»ÓÐÕâ¸ö²ÎÊý£¬¼´ÊÇfalse(default)
-		
+		//Ä¬ï¿½ï¿½ï¿½ï¿½"devMode",ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½false(default)
+//		arg.setBaseUploadPath("uploadFile");
 	}
 
 	@Override
@@ -45,21 +46,21 @@ public class Config extends JFinalConfig {
 	}
 
 	@Override
-	public void configInterceptor(Interceptors arg0) {
+	public void configInterceptor(Interceptors me) {
 		// TODO Auto-generated method stub
-
+//		me.add(new LoginInterceptor());
 	}
 
 	@Override
 	public void configPlugin(Plugins arg) {
 		// TODO Auto-generated method stub
-		// ÅäÖÃ druid Êý¾Ý¿âÁ¬½Ó³Ø²å¼þ
+		// ï¿½ï¿½ï¿½ï¿½ druid ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½Ó³Ø²ï¿½ï¿½
 		DruidPlugin druidPlugin = new DruidPlugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
 		arg.add(druidPlugin);
 		
-		// ÅäÖÃActiveRecord²å¼þ
+		// ï¿½ï¿½ï¿½ï¿½ActiveRecordï¿½ï¿½ï¿½
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(druidPlugin);
-		// ËùÓÐÓ³ÉäÔÚ MappingKit ÖÐ×Ô¶¯»¯¸ã¶¨
+		// ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ MappingKit ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ã¶¨
 		_MappingKit.mapping(arp);
 		arg.add(arp);
 	}
@@ -67,8 +68,8 @@ public class Config extends JFinalConfig {
 	@Override
 	public void configRoute(Routes route) {
 		// TODO Auto-generated method stub
-//		route.add("/", index.class, "/index");	// µÚÈý¸ö²ÎÊýÎª¸ÃControllerµÄÊÓÍ¼´æ·ÅÂ·¾¶
-//		route.add("/blog", BlogController.class); // µÚÈý¸ö²ÎÊýÊ¡ÂÔÊ±Ä¬ÈÏÓëµÚÒ»¸ö²ÎÊýÖµÏàÍ¬£¬ÔÚ´Ë¼´Îª "/blog"
+//		route.add("/", index.class, "/index");	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Controllerï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+//		route.add("/blog", BlogController.class); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½Ê±Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Í¬ï¿½ï¿½ï¿½Ú´Ë¼ï¿½Îª "/blog"
 		route.add(new BackendRoutes());
 	}
 

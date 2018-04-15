@@ -1,8 +1,109 @@
 package com.tp.service;
 
+import java.util.HashMap;
+import java.util.List;
+
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.template.expr.ast.Map;
+import com.tp.clientModel.UserRespModel;
+import com.tp.model.ClassInfo;
 import com.tp.model.Course;
-import com.tp.model.User;
+import com.tp.model.StuCourse;
+import com.tp.util.Result;
 
 public class CourseService {
-	private static final Course dao = new Course().dao();
+	Course course = new Course();
+	ClassInfo classInfo = new ClassInfo();
+	StuCourse stuCourse = new StuCourse();
+	
+	//create course
+	public Result<UserRespModel> createCourse(String name, String intro, String tea_id, String tea_name){
+		Result<UserRespModel> result = null;
+		int resCourse = course.createCourse(name, intro, tea_id, tea_name);
+		result = new Result<UserRespModel>(false, "The course is existed");
+		switch(resCourse){
+			case 1:
+				// search course id
+				Integer course_id = course.getCourseId(tea_id, name);
+				if(course_id != null) {
+					HashMap<String, Object> res_cid = new HashMap<String, Object>();
+					res_cid.put("course_id", course_id);
+					result = new Result<UserRespModel>(res_cid); // return course_id
+				} else {
+					result = new Result<UserRespModel>(false, "Can't get course_id from db");
+				}
+				break;
+			case -1:
+				result = new Result<UserRespModel>(false, "The course is existed");
+				break;
+			default:
+				result = new Result<UserRespModel>(false, "Something wrong with database!");
+		}
+		return result;
+	}
+	
+	// update course
+	// 暂时做的只能修改introduction,不能修改课程名字
+	public Result<UserRespModel> updateCourse(String intro, int courseId){
+		Result<UserRespModel> result = null;
+		Boolean resCourse = course.updateCourse(intro, courseId);
+		result = new Result<UserRespModel>(false, "The course is not existed");
+		if(resCourse) {
+			result = new Result<UserRespModel>(true);
+		}
+		return result;
+	}
+	
+	
+	
+	// delete class
+	public Result<UserRespModel> deleteClass(String clsName, int teaId, String courseName){
+		Result<UserRespModel> result = null;
+		int resCls = classInfo.deleteClass(clsName, teaId, courseName);
+		switch(resCls){
+		case 1:
+			result = new Result<UserRespModel>(true);
+			break;
+		case -2:
+			result = new Result<UserRespModel>(false, "The course is not found!");
+			break;
+		case -1:
+			result = new Result<UserRespModel>(false, "The class is not found!");
+			break;
+		default:
+			result = new Result<UserRespModel>(false, "Something wrong with database!");
+	}
+		return result;
+	}
+	
+	// 查找一门课(根据关键字查找该门课程)
+	// find all the identical course
+	public Result<UserRespModel> getAllCourse(String courseName){
+		Result<UserRespModel> result = null;
+		UserRespModel userRespModel = new UserRespModel();
+		List<Record> courseList = course.getAllCourse(courseName);
+		result = new Result<UserRespModel>(false, "No course");
+		if(courseList != null){
+			int count = courseList.size();
+			userRespModel.setCount(count);
+			userRespModel.setList(courseList);
+			result = new Result<UserRespModel>(userRespModel);
+		}
+		return result;
+	}
+	
+	// 查找该老师开设的所有课程
+	public Result<UserRespModel> getAllCourseById(String teaId){
+		Result<UserRespModel> result = null;
+		UserRespModel userRespModel = new UserRespModel();
+		List<Record> courseList = course.getAllCourseById(teaId);
+		result = new Result<UserRespModel>(false, "The teacher didn't open any course");
+		if(courseList != null){
+			int count = courseList.size();
+			userRespModel.setCount(count);
+			userRespModel.setList(courseList);
+			result = new Result<UserRespModel>(userRespModel);
+		}
+		return result;
+	}
 }
