@@ -52,6 +52,48 @@ public class Course extends Model<Course> {
 		}
 		return false;		
 	}
+	
+	/**
+	 * 1. delete course
+	 * 2. 同时删除 course, class_info, stu_course, task, submit_task, tp_advertise, course_file_info 里面的信息
+	 */
+	public int deleteCourse(int course_id, String tea_id){
+		String sql = "select tea_id from  course where course_id = ?";
+		String sql5 = "select class_id from class_info where course_id = ?";
+		String sql1 = "delete from class_info where class_id = ?";
+		String sql2 = "delete from stu_course where class_id = ?";
+		String sql3 = "delete from task where class_id = ?";
+		String sql4 = "delete from submit_task where class_id = ?";
+		String sql6 = "delete from tp_advertise where class_id = ?";
+		
+		String sql7 = "delete from course_file_info where course_id = ?";
+		String sql8 = "delete from course where course_id = ?";
+		
+		Record id_res = Db.findFirst(sql, course_id);
+		
+		if(id_res != null){
+			String ori_tea_id = id_res.getStr("tea_id");
+			if(ori_tea_id.equals(tea_id)){
+				List<Record> classList = Db.find(sql5, course_id);
+				if(classList.size()>0){
+					for(int i = 0; i < classList.size(); i++) {
+						int class_id = classList.get(i).getInt("class_id");
+						Db.update(sql1, class_id);
+						Db.update(sql2, class_id);
+						Db.update(sql3, class_id);
+						Db.update(sql4, class_id);
+						Db.update(sql6, class_id);
+					}
+				}
+				Db.update(sql7, course_id);
+				Db.update(sql8, course_id);
+				
+				return 1; // delete success
+			}
+			return -1; // 不是该老师创建的班级，该老师没有权利删除班级
+		}
+		return -2; //course_id不存在
+	}
 	//query whether this course has been created by the teacher: not found is true
 	public Record getCourseById(String teaId, String courseName){
 //		String sql = "select c.tea_id,c.course_name from course c, tea_info t where t.id = ?";
@@ -82,7 +124,6 @@ public class Course extends Model<Course> {
 	// find all the identical course
 	public List<Record> getAllCourse(String courseName){
 		String sql = "select * from course where course_name like '%' ? '%' order by create_time DESC";
-		String sql1 = "select t.id as teaId, t.tea_id as accountId, t.username, t.email, c.course_id as course_id, c.course_name, c.introduction, c.create_time from course c, tea_info t where c.tea_id = t.id and c.course_name like '%' ? '%' order by c.create_time DESC";
 		List<Record> classList = Db.find(sql, courseName);
 		if(classList.size()>0){
 			return classList;

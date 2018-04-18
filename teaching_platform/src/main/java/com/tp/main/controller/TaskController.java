@@ -81,6 +81,33 @@ public class TaskController extends Controller {
 	}
 	
 	/**
+	 * 1. 删除作业(只有创建该作业的老师才能删除该作业)
+	 * method: get
+	 * param: task_id
+	 */
+	public void deleteTask() {
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		    String id = userInfo.getId();
+		    int type = userInfo.getType();
+			  
+		    // 只有老师才能create task
+		    if(type == 2){
+		    	int task_id = getParaToInt("task_id");
+			    Result<UserRespModel> result = taskService.deleteTask(task_id, id);
+			    renderJson(result);
+		    } else {
+			  JSONObject json = new JSONObject();
+			  json.put("error", "The user is a student,he has no access to create course");
+			  renderJson(json);
+		   }
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
+		
+	}
+	/**
 	 * 查询该门课所有的作业(按时间先后顺序)
 	 * @param： class_id
 	 */

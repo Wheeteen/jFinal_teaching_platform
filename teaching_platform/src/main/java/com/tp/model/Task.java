@@ -118,6 +118,41 @@ public class Task extends Model<Task> {
 	}
 	
 	/**
+	 * 1. 删除作业
+	 * @param: task_id
+	 */
+	public int deleteTask(int task_id, String tea_id) {
+		String sql = "select tea_id from task where task_id = ?";
+		String sql1 = "delete from task where task_id = ?";
+		String sql2 = "delete from submit_task where task_id = ?";
+		String sql3 = "select task_id from submit_task where task_id = ?";
+		
+		Record id_res = Db.findFirst(sql, task_id);
+		if(id_res != null){
+			String ori_tea_id = id_res.getStr("tea_id");
+			if(ori_tea_id.equals(tea_id)){
+				Boolean res1 = Db.update(sql1,task_id)>0;
+				Record sub_res = Db.findFirst(sql3, task_id);
+				if(sub_res != null) {
+					Boolean res2 = Db.update(sql2,task_id)>0;
+					if(res1 && res2) {
+						return 1; // delete success
+					}
+					return 0;
+				}
+				
+				if(res1) {
+					return 1; // delete success
+				}
+				return 0;//delete false,something wrong with db
+			}
+			return -1; // 不是该老师创建的作业，该老师没有权利删除作业
+		}
+		return -2; // task_id不存在
+		
+	}
+	
+	/**
 	 * 判断是否提交了文件，该task_id是否存在
 	 * @param task_id
 	 * @param file_id

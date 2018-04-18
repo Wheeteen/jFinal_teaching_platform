@@ -57,7 +57,25 @@ public class AboutClassController extends Controller {
 	 * 3. task 和 submit_task里面的记录都要删除
 	 */
 	public void deleteClass(){
-		
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		    String id = userInfo.getId();
+		    int type = userInfo.getType();
+			  
+		    // 只有老师才能create task
+		    if(type == 2){
+		    	int class_id = getParaToInt("class_id");
+		    	Result<UserRespModel> result = service.deleteClass(class_id, id);
+			    renderJson(result);
+		    } else {
+			  JSONObject json = new JSONObject();
+			  json.put("error", "The user is a student,he has no access to create course");
+			  renderJson(json);
+		   }
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
 	}
 	
 	

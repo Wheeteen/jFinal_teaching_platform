@@ -71,8 +71,23 @@ public class NoticeController extends Controller {
 	}
 	
 	/**
-	 * 
+	 * 1. 删除公告
+	 * @param: notice_id
 	 */
+	public void deleteNotice() {
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+//		    String jsonString = HttpKit.readData(getRequest());
+//			UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
+//			int notice_id = user.getNotice_id();   // 公告 的 id 
+			int notice_id = getParaToInt("notice_id");
+		    Result<UserRespModel> result = service.deleteNotice(notice_id);
+		    renderJson(result);
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
+	}
 	/**
 	 * 查询该门课所有的公告(按时间先后顺序)
 	 * @param： class_id

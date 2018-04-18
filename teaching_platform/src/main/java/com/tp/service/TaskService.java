@@ -60,6 +60,30 @@ public class TaskService {
 		}
 		return result;
 	}
+	/**
+	 * 1. 删除作业
+	 * method: get
+	 * param: task_id
+	 */
+	public Result<UserRespModel> deleteTask(int task_id, String id) {
+		Result<UserRespModel> result = null;
+		int res = task.deleteTask(task_id, id);
+		switch (res) {
+		case 1:
+			result = new Result<UserRespModel>(true);
+			break;
+		case 0:
+			result = new Result<UserRespModel>(false, "更新数据库出错");
+			break;
+		case -1:
+			result = new Result<UserRespModel>(false, "这门作业不是该老师创建的作业，该老师没有权利删除此作业！");
+			break;
+		default:
+			result = new Result<UserRespModel>(false, "task_id不存在");
+			break;
+		}
+		return result;
+	}
 	// 查找该班级下该老师发布的所有作业
 	// search all the tasks in that class by the teacher
 	public Result<UserRespModel> getTasksByClassId(int classId) {

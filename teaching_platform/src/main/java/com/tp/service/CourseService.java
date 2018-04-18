@@ -54,25 +54,24 @@ public class CourseService {
 		return result;
 	}
 	
-	
-	
-	// delete class
-	public Result<UserRespModel> deleteClass(String clsName, int teaId, String courseName){
+	/**
+	 * 1. delete course
+	 * 2. 同时删除 course, class_info, stu_course, task, submit_task, tp_advertise, course_file_info 里面的信息
+	 */
+	public Result<UserRespModel> deleteCourse(int course_id, String id) {
 		Result<UserRespModel> result = null;
-		int resCls = classInfo.deleteClass(clsName, teaId, courseName);
-		switch(resCls){
+		int res = course.deleteCourse(course_id, id);
+		switch (res) {
 		case 1:
 			result = new Result<UserRespModel>(true);
 			break;
-		case -2:
-			result = new Result<UserRespModel>(false, "The course is not found!");
-			break;
 		case -1:
-			result = new Result<UserRespModel>(false, "The class is not found!");
+			result = new Result<UserRespModel>(false, "这个课程不是该老师创建的课程，该老师没有权利删除此课程！");
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "Something wrong with database!");
-	}
+			result = new Result<UserRespModel>(false, "course_id不存在");
+			break;
+		}
 		return result;
 	}
 	

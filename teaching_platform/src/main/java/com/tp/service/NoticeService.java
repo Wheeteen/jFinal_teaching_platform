@@ -72,6 +72,19 @@ public class NoticeService {
 	}
 	
 	/**
+	 * 1. 删除公告
+	 * @param: notice_id
+	 */
+	public Result<UserRespModel> deleteNotice(int notice_id) {
+		Result<UserRespModel> result = null;
+		int res = notice.deleteNotice(notice_id);
+		result = new Result<UserRespModel>(false, "notice_id不存在");
+		if(res == 1){
+			result = new Result<UserRespModel>(true);
+		}
+		return result;
+	}
+	/**
 	 * 查询该门课所有的公告(按时间先后顺序)
 	 * @param： class_id
 	 */

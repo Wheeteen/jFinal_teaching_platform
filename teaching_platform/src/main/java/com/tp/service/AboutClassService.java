@@ -42,6 +42,28 @@ public class AboutClassService {
 		return result;
 	}
 	
+
+	/**
+	 * 1. delete class_info 里面的 record
+	 * 2. delete这个班的所有学生：stu_info里面的信息
+	 * 3. task 和 submit_task里面的记录都要删除
+	 */
+	public Result<UserRespModel> deleteClass(int class_id, String id) {
+		Result<UserRespModel> result = null;
+		int res = classInfo.deleteClass(class_id, id);
+		switch (res) {
+		case 1:
+			result = new Result<UserRespModel>(true);
+			break;
+		case -1:
+			result = new Result<UserRespModel>(false, "这个班级不是该老师创建的班级，该老师没有权利删除此班级！");
+			break;
+		default:
+			result = new Result<UserRespModel>(false, "class_id不存在");
+			break;
+		}
+		return result;
+	}
 	/**
 	 * getAllClass (find all the class info from the course)
 	 * 寻找该门课（course_id) 所对应的所有班级信息

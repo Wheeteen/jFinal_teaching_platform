@@ -50,24 +50,29 @@ public class ClassInfo extends Model<ClassInfo> {
 	
 	// delete class
 	// 删除该班级的时候，要连同删除注册该班级的学生，可以之后再处理
-	public int deleteClass(String clsName, int teaId, String courseName){
-		// search the course info from table course
-//		Record courseRet = course.getCourseById(teaId, courseName);
-//		if(courseRet != null){
-//			int course_id = courseRet.getInt("cour_id");
-//			// judge whether the class has existed, if existed, delete; else return false
-//			Boolean isClass = getClsName(clsName, course_id);
-//			if(!isClass){
-//				String sql = "delete from class_info where course_id = ?";
-//				Boolean updateRes = Db.update(sql,course_id)>0;
-//				if(updateRes) {
-//					return 1; // delete success
-//				}
-//				return 0;//delete false,something wrong with db
-//			}
-//			return -1; // the class is not found
-//		}
-		return -2; //the course is not found
+	public int deleteClass(int class_id, String tea_id){
+		String sql = "select tea_id from  class_info where class_id = ?";
+		String sql1 = "delete from class_info where class_id = ?";
+		String sql2 = "delete from stu_course where class_id = ?";
+		String sql3 = "delete from task where class_id = ?";
+		String sql4 = "delete from submit_task where class_id = ?";
+		String sql5 = "delete from tp_advertise where class_id = ?";
+		
+		Record id_res = Db.findFirst(sql, class_id);
+		
+		if(id_res != null){
+			String ori_tea_id = id_res.getStr("tea_id");
+			if(ori_tea_id.equals(tea_id)){
+				Db.update(sql1, class_id);
+				Db.update(sql2, class_id);
+				Db.update(sql3, class_id);
+				Db.update(sql4, class_id);
+				Db.update(sql5, class_id);
+				return 1; // delete success
+			}
+			return -1; // 不是该老师创建的班级，该老师没有权利删除班级
+		}
+		return -2; //class_id不存在
 	}
 	
 	// judge whether the class has existed

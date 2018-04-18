@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jfinal.core.Const;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
@@ -67,21 +68,12 @@ public class FileInfo extends Model<FileInfo> {
 	
 	// 取出该门课的所有文件（by courseId)
 	public List<Record> getFileByCourseId(int courseId) {
-		String sql = "select * from course_file_info where course_id = ? order by create_time DESC";
-		List<Record> fileList = Db.find(sql,courseId);
-		List<Record> validList = new ArrayList<Record>();
+		String sql = "select * from course_file_info where course_id = ? and create_time > ? order by create_time DESC";
+		long now = System.currentTimeMillis();
+		long validTime = now - Constant.ONE_MONTH_TTL;
+		Timestamp vt = new Timestamp(validTime);
+		List<Record> fileList = Db.find(sql,courseId, vt);
 		if(fileList.size()>0){
-//			Timestamp d = new Timestamp(System.currentTimeMillis()); 
-//			long validTime = d.getTime()-Constant.TWO_MONTH_TTL;
-//			for(int i = 0; i < fileList.size(); i++) {
-//				System.out.println(validTime);
-//				System.out.println(fileList.get(i).getTimestamp("create_time").getTime());
-//				System.out.println(fileList.get(i));
-//				if(validTime < fileList.get(i).getTimestamp("create_time").getTime()){
-//					validList.add(fileList.get(i));
-//				}
-//			}
-//			return validList;
 			return fileList;
 		}
 		return null;

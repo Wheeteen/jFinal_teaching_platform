@@ -6,6 +6,9 @@ import java.util.List;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.UserRespModel;
+import com.tp.util.Constant;
+import com.tp.util.Result;
 
 public class Notice extends Model<Notice> {
 	
@@ -115,14 +118,28 @@ public class Notice extends Model<Notice> {
 			return -1; // notice_id不存在
 		}	
 	}
-	
+	/**
+	 * 1. 删除公告
+	 * @param: notice_id
+	 */
+	public int deleteNotice(int notice_id) {
+		String sql = "delete from tp_advertise where notice_id = ?";
+		Boolean updateRes = Db.update(sql,notice_id)>0;
+		if(updateRes) {
+			return 1; // delete success
+		}
+		return 0;//delete false,something wrong with db
+	}
 	/**
 	 * 查询该门课所有的公告(按时间先后顺序)
 	 * @param： class_id
 	 */
 	public List<Record> getNoticeByClassId(int classId){
-		String sql = "select * from tp_advertise where class_id =? order by create_time DESC";
-		List<Record> taskList = Db.find(sql, classId);
+		String sql = "select * from tp_advertise where class_id =? and create_time > ? order by create_time DESC";
+		long now = System.currentTimeMillis();
+		long validTime = now - Constant.ONE_MONTH_TTL;
+		Timestamp vt = new Timestamp(validTime);
+		List<Record> taskList = Db.find(sql, classId, vt);
 		if(taskList.size() > 0) {
 			return taskList;
 		}

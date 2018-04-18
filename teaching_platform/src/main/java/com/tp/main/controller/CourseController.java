@@ -78,9 +78,28 @@ public class CourseController extends Controller {
 	
 	/**
 	 * 1. delete course
-	 * 2. 同时删除class_info、stu_course、task、submit_task、tp_advertise里面的信息
+	 * 2. 同时删除 course, class_info, stu_course, task, submit_task, tp_advertise, course_file_info 里面的信息
 	 */
 	public void deleteCourse(){
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		    String id = userInfo.getId();
+		    int type = userInfo.getType();
+			  
+		    // 只有老师才能create task
+		    if(type == 2){
+		    	int course_id = getParaToInt("course_id");
+		    	Result<UserRespModel> result = service.deleteCourse(course_id, id);
+			    renderJson(result);
+		    } else {
+			  JSONObject json = new JSONObject();
+			  json.put("error", "The user is a student,he has no access to delete course");
+			  renderJson(json);
+		   }
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
 		
 	}
 	
