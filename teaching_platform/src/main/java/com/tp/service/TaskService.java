@@ -25,7 +25,7 @@ public class TaskService {
 		int taskRes = task.createTask(classId, title, content, file_id, end_time, tea_id, tea_name);
 		switch (taskRes) {
 		case 0:
-			result = new Result<UserRespModel>(false, "插入数据出错！");
+			result = new Result<UserRespModel>(false, "something wrong about inserting data into db.");
 			break;
 		case 1:
 			// search task_id
@@ -39,7 +39,7 @@ public class TaskService {
 			}
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "该作业已经创建过了！请重新创建一个作业title不一样的作业");
+			result = new Result<UserRespModel>(false, "The task has been created, please create another task which title is different from that one.");
 			break;
 		}
 		return result;
@@ -53,7 +53,7 @@ public class TaskService {
 			result = new Result<UserRespModel>(true);
 			break;
 		case 0:
-			result = new Result<UserRespModel>(false, "更新数据出错");
+			result = new Result<UserRespModel>(false, "DB wrong");
 			break;
 		default:
 			result = new Result<UserRespModel>(false, "The task_id is not existed");
@@ -74,13 +74,13 @@ public class TaskService {
 			result = new Result<UserRespModel>(true);
 			break;
 		case 0:
-			result = new Result<UserRespModel>(false, "更新数据库出错");
+			result = new Result<UserRespModel>(false, "DB wrong");
 			break;
 		case -1:
-			result = new Result<UserRespModel>(false, "这门作业不是该老师创建的作业，该老师没有权利删除此作业！");
+			result = new Result<UserRespModel>(false, "The teacher has no right to delete the task because the task was not created by the teacher.");
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "task_id不存在");
+			result = new Result<UserRespModel>(false, "task_id is not found");
 			break;
 		}
 		return result;
@@ -92,7 +92,7 @@ public class TaskService {
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.getAllTaskByClassId(classId);
 
-		result = new Result<UserRespModel>(false, "这门课暂时还没有任务");
+		result = new Result<UserRespModel>(false, "There is no task about this class");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setCount(count);
@@ -107,7 +107,7 @@ public class TaskService {
 		int submitRes = task.submitTask(stuId, taskId, fileId, stu_name);
 		switch(submitRes){
 		case 0:
-			result = new Result<UserRespModel>(false, "插入数据出错！");
+			result = new Result<UserRespModel>(false, "DB wrong！");
 			break;
 		case 1:
 			result = new Result<UserRespModel>(true);
@@ -116,7 +116,7 @@ public class TaskService {
 			result = new Result<UserRespModel>(false, "The task_id is not found");
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "提交作业的时间过了！");
+			result = new Result<UserRespModel>(false, "The task is expired!");
 			break;
 		}
 		return result;
@@ -128,7 +128,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.getAllStuTask(classId, studentId);
-		result = new Result<UserRespModel>(false, "该学生还没有提交任何作业");
+		result = new Result<UserRespModel>(false, "The student hasn't submitted any tasks");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setCount(count);
@@ -148,7 +148,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.stuNotSubTask(classId, studentId);
-		result = new Result<UserRespModel>(false, "该学生已提交完所有作业");
+		result = new Result<UserRespModel>(false, "The student has submitted all the task.");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setCount(count);
@@ -168,7 +168,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.getSubmitTask(classId, taskId);
-		result = new Result<UserRespModel>(false, "还没有学生提交了作业");
+		result = new Result<UserRespModel>(false, "No student submit the task");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);
@@ -188,7 +188,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.teaGetSetGrade(classId, taskId);
-		result = new Result<UserRespModel>(false, "已交作业均已评分");
+		result = new Result<UserRespModel>(false, "All tasks have been graded.");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);
@@ -208,7 +208,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.teaGetNotGrade(classId, taskId);
-		result = new Result<UserRespModel>(false, "已交作业都评分了！");
+		result = new Result<UserRespModel>(false, "All tasks have been graded.");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);
@@ -227,7 +227,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.teaGetNotSubTask(classId, taskId);
-		result = new Result<UserRespModel>(false, "所有有学生都提交了作业");
+		result = new Result<UserRespModel>(false, "All students have submitted the task");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);
@@ -244,7 +244,7 @@ public class TaskService {
 	public Result<UserRespModel> setGrade(int id, int grade) {
 		Result<UserRespModel> result = null;
 		Boolean res = task.setGrade(id, grade);
-		result = new Result<UserRespModel>(false, "该作业的id不存在");
+		result = new Result<UserRespModel>(false, "submit_tid is not found");
 		if(res){
 			result = new Result<UserRespModel>(true);	
 		}
@@ -258,7 +258,7 @@ public class TaskService {
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = task.getRealGrade(class_id, task_id);
-		result = new Result<UserRespModel>(false, "还没有评了分的作业");
+		result = new Result<UserRespModel>(false, "No task has been graded");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);
@@ -275,7 +275,7 @@ public class TaskService {
 	public Result<JSONObject> getClassGrade(int class_id) {
 		Result<JSONObject> result = null;
 		List<GradeInfo> taskList = task.getClassGrade(class_id);
-		result = new Result<JSONObject>(false, "该门课下还没有布置作业");
+		result = new Result<JSONObject>(false, "There is no task assigned under this class.");
 		if(taskList != null){
 			int count = taskList.size();
 			JSONObject json = new JSONObject();

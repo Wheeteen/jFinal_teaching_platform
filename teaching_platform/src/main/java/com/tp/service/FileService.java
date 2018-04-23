@@ -26,7 +26,7 @@ public class FileService {
 		SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         String path = date.format(new Date());
         File source = file.getFile();
-        String fileName = file.getFileName(); //文件名
+        String fileName = file.getFileName(); //文件名 filename
         String inputFileName = null; //写进文件夹的文件名字，唯一辨别
         String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         String prefix;
@@ -65,15 +65,15 @@ public class FileService {
             	json.put("file_id", fileRes);
             } else {
             	json.put("success", false);
-            	json.put("error", "文件写入数据库出错");
+            	json.put("error", "DB wrong");
             }
             source.delete();
         } catch (FileNotFoundException e) {
             json.put("success", false);
-            json.put("error", "上传出现错误，请稍后再上传");
+            json.put("error", "Upload error, please upload again later.");
         } catch (IOException e) {
             json.put("success", false);
-            json.put("error", "文件写入服务器出现错误，请稍后再上传");
+            json.put("error", "File write server error, please upload again later.");
         }
 		return json.toJSONString();
 	}

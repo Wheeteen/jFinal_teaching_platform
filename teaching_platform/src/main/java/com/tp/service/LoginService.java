@@ -78,10 +78,10 @@ public class LoginService {
 		Boolean updateRes = false;
 		switch(userRes){
 		  case -1:
-			  result = new Result<UserRespModel>(false, "用户不存在");
+			  result = new Result<UserRespModel>(false, "user is not found");
 			  break;
 		  case 1:
-			  result = new Result<UserRespModel>(false, "新密码与原始密码相同");
+			  result = new Result<UserRespModel>(false, "new password is identical with old password");
 			  break;
 		  case 0:
 		      if(type == 1){
@@ -93,7 +93,7 @@ public class LoginService {
 			  if(updateRes){
 				result = new Result<UserRespModel>(true);
 			  }else{
-				result = new Result<UserRespModel>(false, "查询数据库出错");
+				result = new Result<UserRespModel>(false, "something wrong about querying data from db");
 			  }
 		}		
 		return result;
@@ -110,7 +110,7 @@ public class LoginService {
 		if(type == 2) {
 			info = teacher.getUserInfo(id);
 		}
-		result = new Result<UserRespModel>(false, "查询数据出错");
+		result = new Result<UserRespModel>(false, "something wrong about querying data from db");
 		HashMap<String, Object> mes = new HashMap<String, Object>();
 		if(info != null) {
 			String username = info.getStr("username");
@@ -136,7 +136,7 @@ public class LoginService {
 		if(type == 2) {
 			modifyRes = teacher.modifyUserInfo(id, file_id, email);
 		}
-		result = new Result<UserRespModel>(false, "数据库出错");
+		result = new Result<UserRespModel>(false, "something wrong about db");
 		if(modifyRes) {
 			result = new Result<UserRespModel>(true);
 		}

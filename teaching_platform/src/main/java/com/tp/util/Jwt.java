@@ -115,15 +115,15 @@ public class Jwt {
             checkResult.setClaims(claims);
         } 
         catch (ExpiredJwtException e) {
-            checkResult.setError("该用户已过期");
+            checkResult.setError("The user has expired.");
             checkResult.setSuccess(false);
         } 
         catch (SignatureException e) {
-            checkResult.setError("签名有误");
+            checkResult.setError("The signature is wrong");
             checkResult.setSuccess(false);
         } 
         catch (Exception e) {
-            checkResult.setError("验证有误");
+            checkResult.setError("Validation is wrong");
             checkResult.setSuccess(false);
         }
         return checkResult;

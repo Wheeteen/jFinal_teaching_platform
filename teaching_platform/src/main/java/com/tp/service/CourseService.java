@@ -67,10 +67,10 @@ public class CourseService {
 			result = new Result<UserRespModel>(true);
 			break;
 		case -1:
-			result = new Result<UserRespModel>(false, "这个课程不是该老师创建的课程，该老师没有权利删除此课程！");
+			result = new Result<UserRespModel>(false, "The teacher has no right to delete the course because the course is not created by the teacher.");
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "course_id不存在");
+			result = new Result<UserRespModel>(false, "course_id is not found");
 			break;
 		}
 		return result;

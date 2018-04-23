@@ -26,7 +26,7 @@ public class NoticeService {
 		int noticeRes = notice.createNotice(classId, title, content, file_id, tea_id, tea_name);
 		switch (noticeRes) {
 		case 0:
-			result = new Result<UserRespModel>(false, "插入数据出错！");
+			result = new Result<UserRespModel>(false, "DB wrong");
 			break;
 		case 1:
 			// search notice_id
@@ -40,7 +40,7 @@ public class NoticeService {
 			}
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "该公告已经创建过了！请重新创建一个公告title不一样的公告");
+			result = new Result<UserRespModel>(false, "The notice has been created, please create another notice which is different from that one.");
 			break;
 		
 		}
@@ -62,7 +62,7 @@ public class NoticeService {
 			result = new Result<UserRespModel>(true);
 			break;
 		case 0:
-			result = new Result<UserRespModel>(false, "更新数据出错");
+			result = new Result<UserRespModel>(false, "DB wrong");
 			break;
 		default:
 			result = new Result<UserRespModel>(false, "The notice is not existed");
@@ -78,7 +78,7 @@ public class NoticeService {
 	public Result<UserRespModel> deleteNotice(int notice_id) {
 		Result<UserRespModel> result = null;
 		int res = notice.deleteNotice(notice_id);
-		result = new Result<UserRespModel>(false, "notice_id不存在");
+		result = new Result<UserRespModel>(false, "notice_id is not found");
 		if(res == 1){
 			result = new Result<UserRespModel>(true);
 		}
@@ -93,7 +93,7 @@ public class NoticeService {
 		UserRespModel userRespModel = new UserRespModel();
 		List<Record> taskList = notice.getNoticeByClassId(classId);
 
-		result = new Result<UserRespModel>(false, "暂时还没有公告");
+		result = new Result<UserRespModel>(false, "No notice");
 		if(taskList != null){
 			int count = taskList.size();
 			userRespModel.setList(taskList);

@@ -33,17 +33,17 @@ public class LoginController extends Controller{
 		
 		if(status == -1){
 			json.put("success", false);
-			json.put("error", "用户不存在");
+			json.put("error", "user is not found");
 		}
 		if(status == 0){
 			json.put("success", false);
-			json.put("error", "密码错误");
+			json.put("error", "password is wrong");
 		}
 		if(status == 1){
 			// 将用户的 id和 username 一并存入jwt中
 			Record userRes = service.getUsername(id, type);
 			json.put("success", false);
-			json.put("error", "查询数据库出错");
+			json.put("error", "something wrong about querying db");
 			
 			if(userRes != null){
 				String username = userRes.getStr("username"); //用户名
@@ -79,7 +79,7 @@ public class LoginController extends Controller{
 		String username = user.getUsername();
 		int type = user.getType(); 
 		
-		Result<UserRespModel> result = new Result<UserRespModel>(false,"用户已存在");
+		Result<UserRespModel> result = new Result<UserRespModel>(false,"user has existed");
 		int status = 0;
 		if(type == 1){
 			status = service.registerStu(id, pwd, username);
@@ -92,10 +92,10 @@ public class LoginController extends Controller{
 		  result = new Result<UserRespModel>(true);
 		  break;
 		case 0:
-		  result = new Result<UserRespModel>(false,"用户已存在");
+		  result = new Result<UserRespModel>(false,"user has existed");
 		  break;
 	    default:
-	    	result = new Result<UserRespModel>(false, "插入数据出错");
+	    	result = new Result<UserRespModel>(false, "something wrong about inserting data into db");
 		}
 		renderJson(result);
 	}

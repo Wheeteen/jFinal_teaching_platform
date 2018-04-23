@@ -56,10 +56,10 @@ public class AboutClassService {
 			result = new Result<UserRespModel>(true);
 			break;
 		case -1:
-			result = new Result<UserRespModel>(false, "这个班级不是该老师创建的班级，该老师没有权利删除此班级！");
+			result = new Result<UserRespModel>(false, "The teacher has no right to delete the class because the class is not created by the teacher");
 			break;
 		default:
-			result = new Result<UserRespModel>(false, "class_id不存在");
+			result = new Result<UserRespModel>(false, "class_id is not found");
 			break;
 		}
 		return result;
