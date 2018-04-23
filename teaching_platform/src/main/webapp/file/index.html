@@ -12,33 +12,36 @@
 	    <input type="hidden" name="Authorization" value="eyJhbGciOiJIUzUxMiJ9.eyJjb3Vyc2VfaWQiOjAsInN1Ym1pdF90aWQiOjAsImNsYXNzX2lkIjowLCJncmFkZSI6MCwidGFza19pZCI6MCwiaWQiOiIyMDE0MTAwMjQyNiIsInR5cGUiOjIsImV4cCI6MTUyMzc4ODY5NSwibm90aWNlX2lkIjowLCJzdGF0dXMiOjAsInVzZXJuYW1lIjoidERpYW5nIn0.Q053sTlH007L8pEzh1a3QDyB6tMgq0AULWONwq0ClDnZqQ-OREwH7zFx_sv3nUs1HdfjqzzIpqUO_PeDmtbWFg">
 	    <input type="submit" value="上传">
 	</form>
-
+	
 	<h1>Hello world</h1>
-	<p id="clickBtn">请点击这里</p>
+
+	<input type = "button" value="click here" id="clickBtn"/>
 	
 	<script type="text/javascript">
 	 $(function () {
 		 
-         $("#fileForm").ajaxForm({
+         /** $("#fileForm").ajaxForm({
             success: function (data) {
                 console.log(data)
             },  
             error: function (error) { console.log(data)},
             dataType: "json"
-        }); 
+        }); */
         
-         /** $("#clickBtn").click(function(){
-          $.ajax({
-        	url: "file/teaUploadFile",
-        	type: 'GET',
-        	beforeSend: function (xhr) {
-       	        // xhr.setRequestHeader("jwt", "eyJhbGciOiJIUzUxMiJ9.eyJjbGFzc19pZCI6MCwiZ3JhZGUiOjAsInRhc2tfaWQiOjAsImlkIjo2LCJ0eXBlIjoxLCJleHAiOjE1MjE5NTQxOTB9.FAk7FrYwq-QqfFhSPnavNosCQa4qbXBEJnZXG_OpaTOJzutGRWBu7k_rNGO8CBUeXjyGf9jK0OIsMcx4jt_Auw");
-       	    },
-	       	 success: function (data) {
-	             console.log(data);
-	         }
-          }) */
-        })
+         $("#clickBtn").click(function(){
+	          $.ajax({
+	        	  url: "http://192.168.0.104:81/course/searchAllCourse?course_name=3",
+	    	      type: "GET",
+	    	      dataType: "json",
+	    	      beforeSend: function(xhr) {
+	    	    	  xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJjb3Vyc2VfaWQiOjAsInN1Ym1pdF90aWQiOjAsImNsYXNzX2lkIjowLCJncmFkZSI6MCwidGFza19pZCI6MCwiaWQiOiIyMDE0MTAwMjQyNiIsInR5cGUiOjIsImV4cCI6MTUyNDQ5NDQwNCwibm90aWNlX2lkIjowLCJzdGF0dXMiOjAsInVzZXJuYW1lIjoidERpYW5nIn0.MtjAYF16AImAU-bmeDmzAoT-4PtqKpGyQjB5s083XAyhD9Kbezmj_zLLRGoqlEdMwr2Bp6G8G_LmGywVQDWrBw")
+	    	      }, 
+	    	      success: function(data) {
+	    	    	  console.log(data);
+	    	      }
+	          })
+          });
+          
     }); 
     
 	</script>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.GradeInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.model.Task;
 import com.tp.util.Result;
@@ -246,6 +247,41 @@ public class TaskService {
 		result = new Result<UserRespModel>(false, "该作业的id不存在");
 		if(res){
 			result = new Result<UserRespModel>(true);	
+		}
+		return result;
+	}
+	
+	/**
+	 * 查看该课程某次作业的成绩的分数（10，20，30）
+	 */
+	public Result<UserRespModel> getRealGrade(int class_id, int task_id) {
+		Result<UserRespModel> result = null;
+		UserRespModel userRespModel = new UserRespModel();
+		List<Record> taskList = task.getRealGrade(class_id, task_id);
+		result = new Result<UserRespModel>(false, "还没有评了分的作业");
+		if(taskList != null){
+			int count = taskList.size();
+			userRespModel.setList(taskList);
+			userRespModel.setCount(count);
+			result = new Result<UserRespModel>(userRespModel);
+		}
+		return result;
+	}
+	
+	/**
+	 * 查看该课程所有作业的评分情况（10，20，30）
+	 * 以task作为分界线
+	 */
+	public Result<JSONObject> getClassGrade(int class_id) {
+		Result<JSONObject> result = null;
+		List<GradeInfo> taskList = task.getClassGrade(class_id);
+		result = new Result<JSONObject>(false, "该门课下还没有布置作业");
+		if(taskList != null){
+			int count = taskList.size();
+			JSONObject json = new JSONObject();
+			json.put("list", taskList);
+			json.put("count", count);
+			result = new Result<JSONObject>(json);
 		}
 		return result;
 	}

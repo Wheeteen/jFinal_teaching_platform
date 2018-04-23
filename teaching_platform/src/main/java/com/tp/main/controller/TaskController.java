@@ -262,6 +262,39 @@ public class TaskController extends Controller {
 	}
 	
 	/**
+	 * 查看该课程某次作业的成绩的分数（10，20，30）
+	 */
+	public void getTaskGrade() {
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		  int classId = getParaToInt("class_id");
+		  int taskId = getParaToInt("task_id");
+		  
+		  Result<UserRespModel> result = taskService.getRealGrade(classId, taskId);
+		  renderJson(result);
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
+	}
+	
+	/**
+	 * 查看该课程所有作业的评分情况（10，20，30）
+	 * 以task作为分界线
+	 */
+	public void getClassGrade() {
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		  int classId = getParaToInt("class_id");
+		  
+		  Result<JSONObject> result = taskService.getClassGrade(classId);
+		  renderJson(result);
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
+	}
+	/**
 	 * 1. 老师查看某一次作业 有哪些作业已经评分了呢？查看已经评过分的作业
 	 * 2. class_id 和 task_id
 	 */

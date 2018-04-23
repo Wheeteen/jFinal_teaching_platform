@@ -27,7 +27,6 @@ public class ClassInfo extends Model<ClassInfo> {
 		Integer isClass = getClsName(class_name, course_id);
 		if(isClass == null){
 			// the class is not found, so create the class
-			
 			// get course_name
 			String course_name = getCourseName(course_id);
 			if(course_name != null) {

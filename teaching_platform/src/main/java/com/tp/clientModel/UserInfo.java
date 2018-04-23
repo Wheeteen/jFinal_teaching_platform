@@ -6,6 +6,8 @@ public class UserInfo {
 	private String name;
 	private boolean success;
 	private String error;
+	private String token;
+	
 	public String getId() {
 		return id;
 	}
@@ -36,6 +38,12 @@ public class UserInfo {
 	}
 	public void setError(String error) {
 		this.error = error;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	

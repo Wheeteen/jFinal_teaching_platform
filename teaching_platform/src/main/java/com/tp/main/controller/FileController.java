@@ -45,6 +45,7 @@ public class FileController extends Controller {
 	 * 1. attention: 要先获取getFile("file"),再获取别的参数，否则获取不到("jwt")
 	 */
 	 public void upload() {
+		 getResponse().setHeader("Access-Control-Allow-Origin", "*");
 		  UploadFile file = getFile("file");
 		  String jwt = getPara("Authorization");
 		  

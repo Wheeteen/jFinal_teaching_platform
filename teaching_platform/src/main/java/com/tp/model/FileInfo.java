@@ -70,7 +70,7 @@ public class FileInfo extends Model<FileInfo> {
 	public List<Record> getFileByCourseId(int courseId) {
 		String sql = "select * from course_file_info where course_id = ? and create_time > ? order by create_time DESC";
 		long now = System.currentTimeMillis();
-		long validTime = now - Constant.ONE_MONTH_TTL;
+		long validTime = now - Constant.TWO_MONTH_TTL;
 		Timestamp vt = new Timestamp(validTime);
 		List<Record> fileList = Db.find(sql,courseId, vt);
 		if(fileList.size()>0){

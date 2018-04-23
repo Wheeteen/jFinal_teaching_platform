@@ -1,29 +1,44 @@
 package com.tp.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.CourseInfo;
+import com.tp.util.Constant;
 
 
 public class Course extends Model<Course> {
 	public static final Course dao = new Course();
 	
 	// create course
-	public int createCourse(String name, String intro, String tea_id, String tea_name){
+	public int createCourse(String name, String intro, String tea_id, String tea_name, String class_name){
 		//查询该门课程是否已经创建了
 		Record courseRes = getCourseById(tea_id, name);
 		if(courseRes == null) {
 			Timestamp d = new Timestamp(System.currentTimeMillis()); 
-//			long d = System.currentTimeMillis(); // 毫秒数
-			System.out.println(d);
 			Record course = new Record().set("course_name", name).set("introduction", intro).set("tea_id", tea_id).set("tea_name", tea_name).set("create_time", d);
-			
+
 			try {
 				Db.save("course", course);
+				Integer course_id = getCourseId(tea_id, name);
+				if(course_id != null && class_name != null) {
+					if(class_name.indexOf(",") != -1) {
+						// 代表是数组
+						String str[] = class_name.split(",");
+						for(String info: str) {
+							Record class_info = new Record().set("course_name", name).set("tea_id", tea_id).set("tea_name", tea_name).set("course_id", course_id).set("class_name", info).set("create_time", d);
+							Db.save("class_info", class_info);
+						}
+					} else {
+						Record class_info = new Record().set("course_name", name).set("tea_id", tea_id).set("tea_name", tea_name).set("course_id", course_id).set("class_name", class_name).set("create_time", d);
+						Db.save("class_info", class_info);
+					}
+				}
 				return 1;
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -122,11 +137,38 @@ public class Course extends Model<Course> {
 	}
 	// 查找一门课
 	// find all the identical course
-	public List<Record> getAllCourse(String courseName){
+	// 班级之取出一年内创建的班级
+	public List<CourseInfo> getAllCourse(String courseName){
 		String sql = "select * from course where course_name like '%' ? '%' order by create_time DESC";
-		List<Record> classList = Db.find(sql, courseName);
-		if(classList.size()>0){
-			return classList;
+		String sql1 = "select class_id, class_name from class_info where course_id = ? and create_time > ?";
+		List<Record> courseList = Db.find(sql, courseName);
+		List<CourseInfo> listData = new ArrayList<CourseInfo>();
+		
+		if(courseList.size()>0){
+			long now = System.currentTimeMillis();
+			long validTime = now - Constant.ONE_YEAR_TTL;
+			Timestamp vt = new Timestamp(validTime);
+			for(Record cinfo:courseList) {
+				CourseInfo courseInfo = new CourseInfo();
+				int course_id = cinfo.getInt("course_id"); // 只取出最近一年内创建的该课程对应的班级
+				
+				courseInfo.setCourse_id(course_id);
+				courseInfo.setCourse_name(cinfo.getStr("course_name"));
+				courseInfo.setCreate_time(cinfo.getTimestamp("create_time"));
+				courseInfo.setUpdate_time(cinfo.getTimestamp("update_time"));
+				courseInfo.setTea_id(cinfo.getStr("tea_id"));
+				courseInfo.setTea_name(cinfo.getStr("tea_name"));
+				courseInfo.setIntroduction(cinfo.getStr("introduction"));
+
+				List<Record> classList = Db.find(sql1, course_id, vt);
+				if(classList.size()>0) {
+					courseInfo.setClass_list(classList);
+				}
+				
+				listData.add(courseInfo);
+			}
+			
+			return listData;
 		}
 		return null;
 	}

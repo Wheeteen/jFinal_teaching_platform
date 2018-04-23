@@ -34,7 +34,8 @@ public class CourseController extends Controller {
 			  UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			  String courseName = user.getCourse_name();
 			  String courseIntro = user.getCourse_intro();
-			  Result<UserRespModel> result = service.createCourse(courseName, courseIntro, id, tea_name);
+			  String class_name = user.getClass_name();
+			  Result<UserRespModel> result = service.createCourse(courseName, courseIntro, id, tea_name, class_name);
 			  renderJson(result);
 		  } else {
 			  JSONObject json = new JSONObject();

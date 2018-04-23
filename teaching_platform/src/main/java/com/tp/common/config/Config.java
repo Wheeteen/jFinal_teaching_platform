@@ -25,6 +25,7 @@ public class Config extends JFinalConfig {
 	@Override
 	public void configConstant(Constants arg) {
 		// TODO Auto-generated method stub
+		arg.setEncoding("utf-8");
 		PropKit.use("config.txt");
 		arg.setDevMode(PropKit.getBoolean("devMode", false));
 		arg.setJsonFactory(new MixedJsonFactory());

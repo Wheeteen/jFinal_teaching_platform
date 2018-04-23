@@ -3,11 +3,13 @@ package com.tp.model;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.GradeInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.util.Result;
 
@@ -438,5 +440,49 @@ public class Task extends Model<Task> {
 			realGrade = null;
 		}
 		return Db.update("update submit_task set grade = ? where submit_tid = ?", realGrade, id)>0;
+	}
+	
+	/**
+	 * 查看该课程某次作业的成绩的分数（10，20，30）
+	 */
+	public List<Record> getRealGrade(int class_id, int task_id){
+		String sql = "select a.stu_name, a.stu_id, a.grade, b.grade as score from submit_task a, grade_info b where a.class_id = ? and a.task_id = ? and a.grade = b.detail and a.grade is not null";
+		List<Record> gradeList = Db.find(sql, class_id, task_id);
+		if(gradeList.size() > 0) {
+			return gradeList;
+		}
+		return null;
+	}
+	
+	/**
+	 * 查看该课程所有作业的评分情况（10，20，30）
+	 * 以task作为分界线
+	 */
+	public List<GradeInfo> getClassGrade(int class_id) {
+		String sql = "select * from task where class_id = ?";
+		List<Record> taskList = Db.find(sql, class_id);
+		List<GradeInfo> listData = new ArrayList<GradeInfo>();
+		if(taskList.size() > 0) {
+			for(Record tinfo:taskList) {
+				GradeInfo gradeInfo = new GradeInfo();
+				int task_id = tinfo.getInt("task_id");
+				
+				gradeInfo.setTask_id(task_id);
+				gradeInfo.setTitle(tinfo.getStr("title"));
+				gradeInfo.setContent(tinfo.getStr("content"));
+				gradeInfo.setTea_id(tinfo.getStr("tea_id"));
+				gradeInfo.setTea_name(tinfo.getStr("tea_name"));
+				gradeInfo.setEnd_time(tinfo.getTimestamp("end_time"));
+				
+				List<Record> gradeList = getRealGrade(class_id, task_id);
+
+				if(gradeList != null){
+					gradeInfo.setGrade_list(gradeList);
+				}
+				listData.add(gradeInfo);
+			}
+			return listData;
+		}
+		return null;
 	}
 }

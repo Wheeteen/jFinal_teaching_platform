@@ -132,12 +132,13 @@ public class Notice extends Model<Notice> {
 	}
 	/**
 	 * 查询该门课所有的公告(按时间先后顺序)
+	 * 只取出最近两个月内发布的公告
 	 * @param： class_id
 	 */
 	public List<Record> getNoticeByClassId(int classId){
 		String sql = "select * from tp_advertise where class_id =? and create_time > ? order by create_time DESC";
 		long now = System.currentTimeMillis();
-		long validTime = now - Constant.ONE_MONTH_TTL;
+		long validTime = now - Constant.TWO_MONTH_TTL;
 		Timestamp vt = new Timestamp(validTime);
 		List<Record> taskList = Db.find(sql, classId, vt);
 		if(taskList.size() > 0) {

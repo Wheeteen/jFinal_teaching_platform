@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.template.expr.ast.Map;
+import com.tp.clientModel.CourseInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.model.ClassInfo;
 import com.tp.model.Course;
@@ -17,9 +18,9 @@ public class CourseService {
 	StuCourse stuCourse = new StuCourse();
 	
 	//create course
-	public Result<UserRespModel> createCourse(String name, String intro, String tea_id, String tea_name){
+	public Result<UserRespModel> createCourse(String name, String intro, String tea_id, String tea_name, String class_name){
 		Result<UserRespModel> result = null;
-		int resCourse = course.createCourse(name, intro, tea_id, tea_name);
+		int resCourse = course.createCourse(name, intro, tea_id, tea_name, class_name);
 		result = new Result<UserRespModel>(false, "The course is existed");
 		switch(resCourse){
 			case 1:
@@ -80,13 +81,14 @@ public class CourseService {
 	public Result<UserRespModel> getAllCourse(String courseName){
 		Result<UserRespModel> result = null;
 		UserRespModel userRespModel = new UserRespModel();
-		List<Record> courseList = course.getAllCourse(courseName);
+		List<CourseInfo> courseList = course.getAllCourse(courseName);
 		result = new Result<UserRespModel>(false, "No course");
 		if(courseList != null){
 			int count = courseList.size();
-			userRespModel.setCount(count);
-			userRespModel.setList(courseList);
-			result = new Result<UserRespModel>(userRespModel);
+			HashMap<String, Object> res_cid = new HashMap<String, Object>();
+			res_cid.put("count", count);
+			res_cid.put("list", courseList);
+			result = new Result<UserRespModel>(res_cid);
 		}
 		return result;
 	}
