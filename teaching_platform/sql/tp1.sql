@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-04-15 07:42:17
+-- Generation Time: 2018-04-24 18:11:11
 -- 服务器版本： 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -42,11 +42,22 @@ CREATE TABLE `class_info` (
 --
 
 INSERT INTO `class_info` (`class_id`, `course_name`, `tea_id`, `tea_name`, `course_id`, `class_name`, `create_time`, `update_time`) VALUES
-(19, '数据1', 20141002412, 'tTracy', 19, '1401', '2018-04-09 08:29:46', NULL),
-(20, '数据1', 20141002412, 'tTracy', 19, '1402', '2018-04-09 08:30:05', NULL),
 (21, '数据3', 20141002426, 'tDiang', 21, '数据1', '2018-04-09 08:31:18', NULL),
 (22, '数据3', 20141002426, 'tDiang', 21, '数据2班', '2018-04-09 08:31:43', NULL),
-(23, 'DB2', 20141002426, 'tDiang', 24, '数据库1班', '2018-04-12 23:15:50', NULL);
+(23, 'JS', 20141002426, 'tDiang', 27, '1班', '2018-04-21 03:50:59', NULL),
+(24, 'JS', 20141002426, 'tDiang', 27, ' 2班', '2018-04-21 03:50:59', NULL),
+(25, 'JS', 20141002426, 'tDiang', 27, '3班', '2018-04-21 03:50:59', NULL),
+(26, 'JS2', 20141002426, 'tDiang', 28, '', '2018-04-24 07:24:29', NULL),
+(27, 'JS2', 20141002426, 'tDiang', 28, 'js基础班', '2018-04-24 07:43:13', NULL),
+(28, 'JS', 20141002426, 'tDiang', 27, '444', '2018-04-24 07:44:05', NULL),
+(29, 'JS2', 20141002426, 'tDiang', 28, 'js进阶班', '2018-04-24 07:53:31', NULL),
+(30, 'JS2', 20141002426, 'tDiang', 28, 'js高级班', '2018-04-24 07:56:15', NULL),
+(31, 'JS2', 20141002426, 'tDiang', 28, 'js巨无霸', '2018-04-24 07:58:41', NULL),
+(32, 'JS2', 20141002426, 'tDiang', 28, 'node基础班', '2018-04-24 08:00:58', NULL),
+(33, 'JS2', 20141002426, 'tDiang', 28, 'node进阶班', '2018-04-24 08:01:14', NULL),
+(34, 'DB3', 20141002426, 'tDiang', 26, '数据库1班', '2018-04-24 14:15:49', NULL),
+(35, 'JS2', 20141002426, 'tDiang', 28, 'node高级班', '2018-04-24 14:16:32', NULL),
+(36, 'JS', 20141002426, 'tDiang', 27, 'js44444', '2018-04-24 14:16:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -88,12 +99,15 @@ INSERT INTO `course` (`course_id`, `course_name`, `introduction`, `tea_id`, `tea
 (16, 'DB', '56322544', 20141002426, 'tDiang', '2018-04-09 02:09:38', NULL),
 (17, 'Magic', '56322544', 20141002426, 'tDiang', '2018-04-09 02:12:33', NULL),
 (18, 'English', '56322544', 20141002426, 'tDiang', '2018-04-09 02:19:18', NULL),
-(19, '数据1', '56322544', 20141002426, 'tDiang', '2018-04-09 02:21:07', NULL),
 (20, '数据2', '56322544', 20141002426, 'tDiang', '2018-04-09 02:21:42', NULL),
 (21, '数据3', '这是数据3', 20141002426, 'tDiang', '2018-04-09 02:36:25', '2018-04-09 02:36:25'),
 (22, '算法', '发散思维', 20141002426, 'tDiang', '2018-04-12 13:08:51', '2018-04-12 13:08:51'),
 (23, '22', 'DB2', 20141002426, 'tDiang', '2018-04-12 13:46:10', NULL),
-(24, 'DB2', '11255', 20141002426, 'tDiang', '2018-04-12 13:54:28', NULL);
+(24, 'DB2', '11255', 20141002426, 'tDiang', '2018-04-12 13:54:28', NULL),
+(25, 'Chinese', '154654', 20141002426, 'tDiang', '2018-04-17 03:09:40', NULL),
+(26, 'DB3', '12552', 20141002426, 'tDiang', '2018-04-19 12:10:52', NULL),
+(27, 'JS', '125638', 20141002426, 'tDiang', '2018-04-21 03:50:59', NULL),
+(28, 'JS2', '125638', 20141002426, 'tDiang', '2018-04-21 03:51:36', NULL);
 
 -- --------------------------------------------------------
 
@@ -104,6 +118,8 @@ INSERT INTO `course` (`course_id`, `course_name`, `introduction`, `tea_id`, `tea
 CREATE TABLE `course_file_info` (
   `id` int(11) NOT NULL,
   `course_id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `introduction` text,
   `filename` varchar(255) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `url` varchar(255) NOT NULL,
@@ -116,11 +132,13 @@ CREATE TABLE `course_file_info` (
 -- 转存表中的数据 `course_file_info`
 --
 
-INSERT INTO `course_file_info` (`id`, `course_id`, `filename`, `create_time`, `url`, `file_id`, `tea_id`, `tea_name`) VALUES
-(6, 11, 'Jessy_HSBC.doc', '2018-01-01 03:08:48', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 0, ''),
-(7, 11, '4c116a3360cc4d5585633a3e195a487d.jpg', '2018-03-13 03:10:07', '/img/u/2018-03-13/4c116a3360cc4d5585633a3e195a487d.jpg', 'a52855f12b9446309e2fcd456f8ec5b2', 0, ''),
-(8, 21, 'Jessy_HSBC.doc', '2018-04-10 06:39:21', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang'),
-(9, 11, 'Jessy_HSBC.doc', '2018-04-15 05:13:03', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang');
+INSERT INTO `course_file_info` (`id`, `course_id`, `title`, `introduction`, `filename`, `create_time`, `url`, `file_id`, `tea_id`, `tea_name`) VALUES
+(6, 11, '', NULL, 'Jessy_HSBC.doc', '2018-01-01 03:08:48', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 0, ''),
+(7, 11, '', NULL, '4c116a3360cc4d5585633a3e195a487d.jpg', '2018-03-13 03:10:07', '/img/u/2018-03-13/4c116a3360cc4d5585633a3e195a487d.jpg', 'a52855f12b9446309e2fcd456f8ec5b2', 0, ''),
+(8, 21, '', NULL, 'Jessy_HSBC.doc', '2018-04-10 06:39:21', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang'),
+(9, 11, '', NULL, 'Jessy_HSBC.doc', '2018-04-15 05:13:03', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang'),
+(10, 21, '第一课课件', 'daskhflksadjflkksjd6788', 'Jessy_HSBC.doc', '2018-04-24 13:12:10', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang'),
+(11, 21, '第二课课件', NULL, 'Jessy_HSBC.doc', '2018-04-24 13:12:54', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '56db8e9f08ba43d8b2ed15c13ecef41c', 20141002426, 'tDiang');
 
 -- --------------------------------------------------------
 
@@ -139,14 +157,14 @@ CREATE TABLE `grade_info` (
 --
 
 INSERT INTO `grade_info` (`id`, `grade`, `detail`) VALUES
-(1, 0, '未评分'),
-(2, 1, 'D'),
-(3, 2, 'C-'),
-(4, 3, 'C+'),
-(5, 4, 'B-'),
-(6, 5, 'B+'),
-(7, 6, 'A-'),
-(8, 7, 'A+');
+(1, 0, 'null'),
+(2, 10, 'D'),
+(3, 20, 'C-'),
+(4, 30, 'C+'),
+(5, 40, 'B-'),
+(6, 50, 'B+'),
+(7, 60, 'A-'),
+(8, 70, 'A+');
 
 -- --------------------------------------------------------
 
@@ -169,8 +187,15 @@ INSERT INTO `img_file_store` (`id`, `url`, `filename`, `create_time`) VALUES
 ('41c0c3f09ca04cb99ea38fbbdf44ef03', '/fileDir/u/2018-03-13/6ea3f38746674fabb4e7271693b4d4100703计算机E模拟.docx', '0703计算机E模拟.docx', '2018-03-13 14:24:37'),
 ('4242541de6bf4f1cafb38569c3ba78ad', '/fileDir/u/2018-03-13/14a8ec60100946e28fa4e2b414cb74ccCareerFrog_简历模板_中文(1).docx', 'CareerFrog_简历模板_中文(1).docx', '2018-03-13 10:59:40'),
 ('43831b86269c4bd58f673eae0b378634', '/img/u/2018-04-15/e2b1af426014442e99e199d9d3d21b61.jpg', 'e2b1af426014442e99e199d9d3d21b61.jpg', '2018-04-15 11:36:29'),
+('4e535ad07ad84e76b7baf254a814ef2a', '/img/u/2018-04-22/0b77233c560f4ba0aa4b88bc94be5ec5.png', '0b77233c560f4ba0aa4b88bc94be5ec5.png', '2018-04-22 11:08:27'),
 ('56db8e9f08ba43d8b2ed15c13ecef41c', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', 'Jessy_HSBC.doc', '2018-03-13 10:30:08'),
+('787eb075f462452abe6f816487372238', '/fileDir/u/2018-04-22/34c8d904ffce4331b1016c3946774ea7目录结构.docx', '目录结构.docx', '2018-04-22 11:07:57'),
+('a1e35383ab5d4ccfa6ca9f3de5d073dd', '/fileDir/u/2018-04-22/dfcacb5d77574f828c5698b241fc32b4蔡康永的说话之道.docx', '蔡康永的说话之道.docx', '2018-04-22 11:44:35'),
+('a4873393803e42cb9d298b7fe192c64c', '/fileDir/u/2018-04-15/66934001304d44a9916ff46354d6454f注意事项4.docx', '注意事项4.docx', '2018-04-15 16:51:58'),
 ('a52855f12b9446309e2fcd456f8ec5b2', '/img/u/2018-03-13/4c116a3360cc4d5585633a3e195a487d.jpg', '4c116a3360cc4d5585633a3e195a487d.jpg', '2018-03-13 10:59:13'),
+('ac73f9d263d7484fa8dad2816570fce7', '/fileDir/u/2018-04-22/38fba0ed801a4fbbb65092a649ed41d7蔡康永的说话之道.docx', '蔡康永的说话之道.docx', '2018-04-22 11:14:04'),
+('b306ace50bd0481eb1be474438a4b00c', '/fileDir/u/2018-04-24/86891db011ef4cd5af33cc36ee0d8d9f接口.docx', '接口.docx', '2018-04-24 13:44:57'),
+('b5d309c6586f4778bfa819887a56751f', '/fileDir/u/2018-04-24/690c1cc9bac84dc4a4f09088c2b8bda0test1.docx', 'test1.docx', '2018-04-24 13:43:38'),
 ('c3e1ddb8c68b4b3db7491bc200019ede', '/fileDir/u/2018-04-15/15bd7dadaccc470fba98b994c895cd6d注意事项.docx', '注意事项.docx', '2018-04-15 11:34:35');
 
 -- --------------------------------------------------------
@@ -235,10 +260,9 @@ CREATE TABLE `stu_course` (
 
 INSERT INTO `stu_course` (`id`, `stu_id`, `stu_name`, `class_id`, `create_time`, `class_name`) VALUES
 (00000000021, 20141002426, 'diang', 21, '2018-04-09 08:42:07', '数据1'),
-(00000000022, 20141002426, 'diang', 20, '2018-04-09 08:42:35', '1402'),
-(00000000023, 20141002418, 'biyue', 19, '2018-04-09 08:44:15', '1401'),
 (00000000024, 20141002418, 'biyue', 21, '2018-04-09 08:44:27', '数据1'),
-(00000000025, 20141002412, 'Tracy', 23, '2018-04-12 23:29:39', '数据库1班');
+(00000000025, 20141002426, 'diang', 22, '0000-00-00 00:00:00', '数据2班'),
+(00000000026, 20141002426, 'diang', 23, '0000-00-00 00:00:00', '1班');
 
 -- --------------------------------------------------------
 
@@ -252,17 +276,19 @@ CREATE TABLE `stu_info` (
   `password` varchar(35) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
   `imgUrl` varchar(255) DEFAULT NULL COMMENT '用户头像',
-  `email` varchar(45) DEFAULT NULL
+  `email` varchar(45) DEFAULT NULL,
+  `phone` bigint(13) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `stu_info`
 --
 
-INSERT INTO `stu_info` (`id`, `username`, `password`, `status`, `imgUrl`, `email`) VALUES
-(20141002412, 'Tracy', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL),
-(20141002418, 'biyue', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL),
-(20141002426, 'diang', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, '/fileDir/u/2018-03-13/6ea3f38746674fabb4e7271693b4d4100703计算机E模拟.docx', '4253@qq.com');
+INSERT INTO `stu_info` (`id`, `username`, `password`, `status`, `imgUrl`, `email`, `phone`) VALUES
+(20141002412, 'Tracy', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL, NULL),
+(20141002418, 'biyue', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL, NULL),
+(20141002426, 'diang', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, '/fileDir/u/2018-03-13/6ea3f38746674fabb4e7271693b4d4100703计算机E模拟.docx', '4253@qq.com', NULL),
+(201410024989, 'llllll', '123123qwe', 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -276,7 +302,8 @@ CREATE TABLE `submit_task` (
   `stu_name` varchar(40) NOT NULL,
   `stu_id` bigint(20) NOT NULL,
   `filename` varchar(80) NOT NULL,
-  `grade` varchar(10) DEFAULT NULL,
+  `grade` smallint(2) NOT NULL DEFAULT '0',
+  `remark` text,
   `file_id` varchar(32) NOT NULL,
   `url` varchar(255) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -287,10 +314,9 @@ CREATE TABLE `submit_task` (
 -- 转存表中的数据 `submit_task`
 --
 
-INSERT INTO `submit_task` (`submit_tid`, `task_id`, `stu_name`, `stu_id`, `filename`, `grade`, `file_id`, `url`, `create_time`, `class_id`) VALUES
-(9, 8, 'diang', 20141002426, 'CareerFrog_简历模板_中文(1).docx', 'A+', '4242541de6bf4f1cafb38569c3ba78ad', '/fileDir/u/2018-03-13/14a8ec60100946e28fa4e2b414cb74ccCareerFrog_简历模板_中文(1).docx', '2018-04-09 15:45:32', 21),
-(10, 9, 'diang', 20141002426, 'CareerFrog_简历模板_中文(1).docx', NULL, '4242541de6bf4f1cafb38569c3ba78ad', '/fileDir/u/2018-03-13/14a8ec60100946e28fa4e2b414cb74ccCareerFrog_简历模板_中文(1).docx', '2018-04-09 09:44:35', 21),
-(11, 10, 'diang', 20141002426, 'Jessy_HSBC.doc', NULL, '56db8e9f08ba43d8b2ed15c13ecef41c', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '2018-04-10 03:52:00', 21);
+INSERT INTO `submit_task` (`submit_tid`, `task_id`, `stu_name`, `stu_id`, `filename`, `grade`, `remark`, `file_id`, `url`, `create_time`, `class_id`) VALUES
+(9, 8, 'diang', 20141002426, 'CareerFrog_简历模板_中文(1).docx', 6, '请更认真对待作业', '4242541de6bf4f1cafb38569c3ba78ad', '/fileDir/u/2018-03-13/14a8ec60100946e28fa4e2b414cb74ccCareerFrog_简历模板_中文(1).docx', '2018-04-24 12:47:51', 21),
+(11, 10, 'diang', 20141002426, 'Jessy_HSBC.doc', 0, NULL, '56db8e9f08ba43d8b2ed15c13ecef41c', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '2018-04-21 11:18:58', 21);
 
 -- --------------------------------------------------------
 
@@ -306,25 +332,16 @@ CREATE TABLE `task` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建作业时间',
   `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '上传文件的截止时间',
   `content` text COMMENT '作业内容',
-  `title` varchar(40) NOT NULL,
-  `file_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `filename` varchar(80) DEFAULT NULL,
-  `url` varchar(100) DEFAULT NULL
+  `title` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `task`
 --
 
-INSERT INTO `task` (`task_id`, `tea_id`, `tea_name`, `class_id`, `create_time`, `end_time`, `content`, `title`, `file_id`, `filename`, `url`) VALUES
-(8, 20141002426, 'tDiang', 21, '2018-04-10 03:06:04', '2018-04-10 16:00:00', '请完成1.5', '数据3第一章作业', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc'),
-(9, 20141002426, 'tDiang', 21, '2018-04-09 09:19:45', '0000-00-00 00:00:00', '请完成2.1', '数据3第二章作业', NULL, NULL, NULL),
-(10, 20141002426, 'tDiang', 21, '2018-04-10 03:51:53', '2018-04-10 03:54:00', '请完成3.1', '数据3第三章作业', NULL, NULL, NULL),
-(11, 20141002426, 'tDiang', 21, '2018-04-10 03:09:11', '2018-04-10 16:00:00', '请完成4.5', '数据第四章作业', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc'),
-(12, 20141002426, 'tDiang', 21, '2018-04-10 03:14:26', '2018-04-10 16:00:00', '请完成4.5', '数据第五章作业', NULL, NULL, NULL),
-(13, 20141002412, 'tTracy', 23, '2018-04-13 00:01:26', '2018-04-13 16:00:00', '请完成1.1', '第一章作业', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc'),
-(14, 20141002412, 'tTracy', 23, '2018-04-13 00:03:34', '2018-04-13 16:00:00', NULL, '第二章作业', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc'),
-(15, 20141002412, 'tTracy', 23, '2018-04-13 00:04:07', '2018-04-13 16:00:00', NULL, '第三章作业', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc');
+INSERT INTO `task` (`task_id`, `tea_id`, `tea_name`, `class_id`, `create_time`, `end_time`, `content`, `title`) VALUES
+(8, 20141002426, 'tDiang', 21, '2018-04-10 03:06:04', '2018-04-10 16:00:00', '请完成1.5', '数据3第一章作业'),
+(10, 20141002426, 'tDiang', 21, '2018-04-10 03:51:53', '2018-04-10 03:54:00', '请完成3.1', '数据3第三章作业');
 
 -- --------------------------------------------------------
 
@@ -338,18 +355,22 @@ CREATE TABLE `tea_info` (
   `password` varchar(40) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
   `imgUrl` varchar(255) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL
+  `email` varchar(45) DEFAULT NULL,
+  `phone` bigint(13) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `tea_info`
 --
 
-INSERT INTO `tea_info` (`id`, `username`, `password`, `status`, `imgUrl`, `email`) VALUES
-(20141002412, 'tTracy', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL),
-(20141002418, 'tbiyue', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL),
-(20141002426, 'tDiang', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, '4253@qq.com'),
-(2014100242642, 't0409', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL);
+INSERT INTO `tea_info` (`id`, `username`, `password`, `status`, `imgUrl`, `email`, `phone`) VALUES
+(20141000000, '罗半仙', '123123qwe', 1, NULL, NULL, NULL),
+(20141002401, '罗显现', '123123qwe', 1, NULL, NULL, NULL),
+(20141002402, '罗库库', '123123qwe', 1, NULL, NULL, NULL),
+(20141002412, 'tTracy', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL, NULL),
+(20141002418, 'tbiyue', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL, NULL),
+(20141002426, 'tDiang', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, '/img/u/2018-04-15/e2b1af426014442e99e199d9d3d21b61.jpg', '12345@qq.com', 1356789277882),
+(2014100242642, 't0409', '5DEDAF99D256C1CFD97CE2975F4B8624', 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -364,21 +385,22 @@ CREATE TABLE `tp_advertise` (
   `content` text NOT NULL,
   `tea_id` bigint(20) NOT NULL,
   `tea_name` varchar(255) NOT NULL,
-  `file_id` varchar(32) DEFAULT NULL,
-  `filename` varchar(80) DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
-  `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `tp_advertise`
 --
 
-INSERT INTO `tp_advertise` (`notice_id`, `class_id`, `title`, `content`, `tea_id`, `tea_name`, `file_id`, `filename`, `url`, `create_time`) VALUES
-(1, 19, '下周上实验课', '请同学们去实验室A209上课', 20141002426, 'tDiang', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '2018-04-10 01:22:28'),
-(2, 19, '第三周上实验课', '请同学们去实验室A203上课', 20141002426, 'tDiang', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '2018-04-10 00:23:48'),
-(3, 19, '第四周上实验课', '请同学们去实验室A203上课', 20141002426, 'tDiang', '56db8e9f08ba43d8b2ed15c13ecef41c', 'Jessy_HSBC.doc', '/fileDir/u/2018-03-13/dc0b7b03e6ce4e89866bb61892209492Jessy_HSBC.doc', '2018-04-10 00:40:33'),
-(4, 19, '第五周实验课', '请同学们去实验室A3上课', 20141002426, 'tDiang', NULL, NULL, NULL, '2018-04-15 02:25:48');
+INSERT INTO `tp_advertise` (`notice_id`, `class_id`, `title`, `content`, `tea_id`, `tea_name`, `create_time`) VALUES
+(1, 21, '第一次', '2445', 20141002426, 'tDiang', '0000-00-00 00:00:00'),
+(2, 21, '第二次', '的开发决定了', 20141002426, 'tDiang', '2018-04-24 01:43:05'),
+(3, 21, '第三次', '的开始放假', 20141002426, 'tDiang', '2018-04-24 01:43:39'),
+(4, 21, '第四次', '看大送积分', 20141002426, 'tDiang', '2018-04-24 01:44:04'),
+(7, 22, '第一', '佳斯柯达', 20141002426, 'tDiang', '2018-04-24 02:08:40'),
+(8, 21, '数据3第二次作业', '请完成2.11.1', 20141002426, 'tDiang', '2018-04-24 04:56:13'),
+(9, 33, '基于React.js的教学平台设计与开发', '本宝准备飞天', 20141002426, 'tDiang', '2018-04-24 11:21:31'),
+(10, 27, 'js基础班的同学看过来', '有本教材需要大家买一下，叫做《javascript程序设计开发》，人手一本哈哈哈', 20141002426, 'tDiang', '2018-04-24 11:31:35');
 
 -- --------------------------------------------------------
 
@@ -693,7 +715,7 @@ ALTER TABLE `tp_tea`
 -- 使用表AUTO_INCREMENT `class_info`
 --
 ALTER TABLE `class_info`
-  MODIFY `class_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `class_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
 -- 使用表AUTO_INCREMENT `comment`
 --
@@ -703,12 +725,12 @@ ALTER TABLE `comment`
 -- 使用表AUTO_INCREMENT `course`
 --
 ALTER TABLE `course`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- 使用表AUTO_INCREMENT `course_file_info`
 --
 ALTER TABLE `course_file_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- 使用表AUTO_INCREMENT `grade_info`
 --
@@ -728,7 +750,7 @@ ALTER TABLE `status_type`
 -- 使用表AUTO_INCREMENT `stu_course`
 --
 ALTER TABLE `stu_course`
-  MODIFY `id` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- 使用表AUTO_INCREMENT `submit_task`
 --
@@ -738,12 +760,12 @@ ALTER TABLE `submit_task`
 -- 使用表AUTO_INCREMENT `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- 使用表AUTO_INCREMENT `tp_advertise`
 --
 ALTER TABLE `tp_advertise`
-  MODIFY `notice_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `notice_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- 使用表AUTO_INCREMENT `tp_class`
 --

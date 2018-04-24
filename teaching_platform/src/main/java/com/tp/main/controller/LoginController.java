@@ -73,15 +73,11 @@ public class LoginController extends Controller{
 
 	public void register() {
 		String jsonString = HttpKit.readData(getRequest());
-//		UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
-//		String id = user.getId(); // 用户的学号or工号
-//		String pwd = user.getPassword();
-//		String username = user.getUsername();
-//		int type = user.getType(); 
-		String id = getPara("id");
-		String pwd = getPara("pwd");
-		String username = getPara("username");
-		int type = getParaToInt("type");
+		UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
+		String id = user.getId(); // 用户的学号or工号
+		String pwd = user.getPassword();
+		String username = user.getUsername();
+		int type = user.getType(); 
 		
 		Result<UserRespModel> result = new Result<UserRespModel>(false,"user has existed");
 		int status = 0;
@@ -126,7 +122,10 @@ public class LoginController extends Controller{
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	
@@ -152,7 +151,10 @@ public class LoginController extends Controller{
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 }

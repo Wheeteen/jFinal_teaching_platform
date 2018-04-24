@@ -45,18 +45,18 @@ public class FileController extends Controller {
 	 * 1. attention: 要先获取getFile("file"),再获取别的参数，否则获取不到("jwt")
 	 */
 	 public void upload() {
-		 getResponse().setHeader("Access-Control-Allow-Origin", "*");
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
 		  UploadFile file = getFile("file");
-		  String jwt = getPara("Authorization");
-		  
-		  CheckResult checkResult = Jwt.validateJWT(jwt);
-		  if(checkResult.getSuccess()) {
-			  String result = service.upload(file);
-			  renderJson(result);
-		  }else{
-			String error = checkResult.getError();
-			renderJson(error);	
-		 }
+		  String result = service.upload(file);
+		  renderJson(result);
+		}
+		else {
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
+		}
     }
 	
 	/**
@@ -76,8 +76,10 @@ public class FileController extends Controller {
 			  UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			  int course_id = user.getCourse_id();   // class 的 id :  班级的id
 			  String file_id = user.getFile_id(); // 文件的Id
+			  String title = user.getTitle(); // 文件的title
+			  String intro = user.getIntroduction(); // 文件的introduction
 			  
-			  Result<UserRespModel> result = service.teaUploadFile(course_id, file_id, id, tea_name);
+			  Result<UserRespModel> result = service.teaUploadFile(course_id, file_id, title, intro, id, tea_name);
 			  renderJson(result);
 		    } else {
 			  JSONObject json = new JSONObject();
@@ -86,7 +88,10 @@ public class FileController extends Controller {
 		   }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -109,7 +114,10 @@ public class FileController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -123,7 +131,10 @@ public class FileController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 }

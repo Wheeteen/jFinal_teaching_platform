@@ -63,6 +63,7 @@ public class FileService {
             if(fileRes != null) {
             	json.put("success", true);
             	json.put("file_id", fileRes);
+            	json.put("url", fileUrl);
             } else {
             	json.put("success", false);
             	json.put("error", "DB wrong");
@@ -79,9 +80,9 @@ public class FileService {
 	}
 	
 	// 老师上传文件到某一门课程中(course_file_info)
-	public Result<UserRespModel> teaUploadFile(int courseId, String fileId, String tea_id, String tea_name){
+	public Result<UserRespModel> teaUploadFile(int courseId, String fileId, String title, String intro, String tea_id, String tea_name){
 		Result<UserRespModel> result = null;
-		int res = fileInfo.teaUploadFile(courseId, fileId, tea_id, tea_name);
+		int res = fileInfo.teaUploadFile(courseId, fileId, title, intro, tea_id, tea_name);
 		
 		switch(res){
 		case -1:

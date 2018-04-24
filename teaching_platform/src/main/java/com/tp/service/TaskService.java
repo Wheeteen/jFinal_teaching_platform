@@ -6,6 +6,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Record;
 import com.tp.clientModel.GradeInfo;
+import com.tp.clientModel.StuTaskInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.model.Task;
 import com.tp.util.Result;
@@ -20,9 +21,9 @@ public class TaskService {
 	 * @param content
 	 * @return
 	 */
-	public Result<UserRespModel> createTask(int classId, String title, String content, String file_id, String end_time,String tea_id, String tea_name) {
+	public Result<UserRespModel> createTask(int classId, String title, String content, String end_time,String tea_id, String tea_name) {
 		Result<UserRespModel> result = null;
-		int taskRes = task.createTask(classId, title, content, file_id, end_time, tea_id, tea_name);
+		int taskRes = task.createTask(classId, title, content, end_time, tea_id, tea_name);
 		switch (taskRes) {
 		case 0:
 			result = new Result<UserRespModel>(false, "something wrong about inserting data into db.");
@@ -45,9 +46,9 @@ public class TaskService {
 		return result;
 	}
 	
-	public Result<UserRespModel> updateTask(int task_id, String content, String file_id, String end_time){
+	public Result<UserRespModel> updateTask(int task_id, String content, String end_time){
 		Result<UserRespModel> result = null;
-		int res = task.updateTask(task_id, content, file_id, end_time);
+		int res = task.updateTask(task_id, content, end_time);
 		switch (res) {
 		case 1:
 			result = new Result<UserRespModel>(true);
@@ -223,16 +224,18 @@ public class TaskService {
 	 * 2. @param: class_id 和 task_id
 	 * 3. @method: get
 	 */
-	public Result<UserRespModel> teaGetNotSubTask(int classId, int taskId){
-		Result<UserRespModel> result = null;
+	public Result<JSONObject> teaGetNotSubTask(int classId, int taskId){
+		Result<JSONObject> result = null;
 		UserRespModel userRespModel = new UserRespModel();
-		List<Record> taskList = task.teaGetNotSubTask(classId, taskId);
-		result = new Result<UserRespModel>(false, "All students have submitted the task");
+		List<StuTaskInfo> taskList = task.teaGetNotSubTask(classId, taskId);
+		result = new Result<JSONObject>(false, "All students have submitted the task");
 		if(taskList != null){
 			int count = taskList.size();
-			userRespModel.setList(taskList);
-			userRespModel.setCount(count);
-			result = new Result<UserRespModel>(userRespModel);
+			JSONObject jsonObject = new JSONObject();
+			
+			jsonObject.put("list", taskList);
+			jsonObject.put("count", count);
+			result = new Result<JSONObject>(jsonObject);
 		}
 		return result;
 	}
@@ -241,9 +244,9 @@ public class TaskService {
 	 * 1. 老师对作业进行评分
 	 * 2. 提交的是该submit_task中的id(primary key) 和 grade(int)
 	 */
-	public Result<UserRespModel> setGrade(int id, int grade) {
+	public Result<UserRespModel> setGrade(int id, int grade, String remark) {
 		Result<UserRespModel> result = null;
-		Boolean res = task.setGrade(id, grade);
+		Boolean res = task.setGrade(id, grade, remark);
 		result = new Result<UserRespModel>(false, "submit_tid is not found");
 		if(res){
 			result = new Result<UserRespModel>(true);	

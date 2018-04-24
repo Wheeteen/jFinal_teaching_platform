@@ -21,7 +21,15 @@ public class UserReqModel {
 	private int notice_id; // 公告的id
 	private String end_time; // 提交作业的截止时间
 	private String phone;
+	private String remark; // 评语
+	private String introduction; // 文件的简述
 	
+	public String getIntroduction() {
+		return introduction;
+	}
+	public void setIntroduction(String introduction) {
+		this.introduction = introduction;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -143,6 +151,12 @@ public class UserReqModel {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 	
 }

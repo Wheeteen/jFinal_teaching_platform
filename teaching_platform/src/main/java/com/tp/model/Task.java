@@ -10,6 +10,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 import com.tp.clientModel.GradeInfo;
+import com.tp.clientModel.StuTaskInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.util.Result;
 
@@ -23,22 +24,7 @@ public class Task extends Model<Task> {
 	 * @param content
 	 * @return
 	 */
-	public int createTask(int classId, String title, String content, String file_id, String end_time, String tea_id, String tea_name) {
-		/**
-		 * 1. 如果fileId不为null（是否已经成功上传作业）
-		 * 2. 先去table img_file_store中查找该fileId是否存在
-		 */
-		String fileUrl = null; // file url
-		String filename = null; // filename
-		if(file_id != null) {
-			String sql = "select url, filename from img_file_store where id = ?";
-			Record fileRes = Db.findFirst(sql, file_id);	
-			if(fileRes != null) {
-				fileUrl = fileRes.getStr("url");
-				filename = fileRes.getStr("filename");
-			}
-		}
-		  
+	public int createTask(int classId, String title, String content, String end_time, String tea_id, String tea_name) {
 		// 查看该class_id下是否已经创建了同样title的作业
 		Integer taskRes = getTaskId(classId, title);
 		if(taskRes == null){
@@ -47,7 +33,7 @@ public class Task extends Model<Task> {
 			SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
 			  try {
 				Timestamp endTime = new Timestamp (fmt.parse(end_time).getTime());
-				Record task = new Record().set("class_id", classId).set("title", title).set("file_id", file_id).set("filename", filename).set("url", fileUrl).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("create_time", d).set("end_time", endTime);
+				Record task = new Record().set("class_id", classId).set("title", title).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("create_time", d).set("end_time", endTime);
 				Db.save("task", task);
 				return 1;
 			} catch (ParseException e) {
@@ -66,12 +52,11 @@ public class Task extends Model<Task> {
 	 * @param content
 	 * @return
 	 */
-	public int updateTask(int task_id, String content, String file_id, String end_time){
+	public int updateTask(int task_id, String content, String end_time){
 		//查询该task_id是否存在
-		int taskRes = isTaskFile(task_id, file_id);
-		switch (taskRes) {
-		case 0:
-			// 判断 end_time 是否为null
+		int taskRes = isTaskFile(task_id);
+		if(taskRes == 1){
+			// task_id存在，所以可以update
 			if(end_time!=null) {
 				// 更新content和 end_time
 				SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
@@ -88,35 +73,10 @@ public class Task extends Model<Task> {
 			} else {
 				return Db.update("update task set content =? where task_id =?", content, task_id)>0 ? 1: 0; // update成功1，否则为0
 			}
-		case 1:
-			String sql = "select url, filename from img_file_store where id = ?";
-			Record fileRes = Db.findFirst(sql, file_id);	
-			String fileUrl = null; // file url
-			String filename = null; // filename
-			if(fileRes != null) {
-				fileUrl = fileRes.getStr("url");
-				filename = fileRes.getStr("filename");
-			}
-			// 判断 end_time 是否为null
-			if(end_time!=null) {
-				// 更新content和 end_time
-				SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
-				Timestamp endTime;
-				try {
-					endTime = new Timestamp (fmt.parse(end_time).getTime());
-					return Db.update("update task set content =?, end_time = ?, file_id = ?, filename = ?, url = ? where task_id =?", content, endTime, file_id, filename, fileUrl, task_id)>0 ? 1: 0; // update成功1，否则为0
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return 0;
-				}
-				
-			} else {
-				return Db.update("update task set content =?, file_id = ?, filename = ?, url = ? where task_id =?", content, file_id, filename, fileUrl, task_id)>0 ? 1: 0; // update成功1，否则为0
-			}
-		default:
-			return -1; // task_id不存在
-		}	
+		}
+		else {
+			return -1;
+		}
 	}
 	
 	/**
@@ -160,21 +120,11 @@ public class Task extends Model<Task> {
 	 * @param file_id
 	 * @return
 	 */
-	public int isTaskFile(int task_id, String file_id) {
-		String sql = "select task_id, file_id from task where task_id = ?";
+	public int isTaskFile(int task_id) {
+		String sql = "select task_id from task where task_id = ?";
 		Record res = Db.findFirst(sql, task_id);
-		if(res.getInt("task_id") != null) { // task_id存在, 该条记录存在
-			if(file_id == null) {
-				return 0; // 这时没有传文件，只是更新content即可
-			} else {
-				// 传了文件
-				String ori_file_id = res.getStr("file_id");
-				if(file_id.equals(ori_file_id)) {
-					return 0; // 传了文件， 但是跟原来的一样，不用update file_id这些
-				} else {
-					return 1; // 传了文件， file_id与原来的不相等， 要update file_id  filename这些信息
-				}
-			}
+		if(res != null) { // task_id存在, 该条记录存在
+			return 1;
 		}
 		return -1; // notice_id不存在
 	}
@@ -358,7 +308,7 @@ public class Task extends Model<Task> {
 	// 一个班级中有多少学生提交了该门课的作业
 	// 由class_id来查询
 	public List<Record> getSubmitTask(int classId, int taskId) {
-		String sql = "select * from submit_task where class_id = ? and task_id = ?";
+		String sql = "select a.*, b.email, b.phone from submit_task a, stu_info b where class_id = ? and task_id = ? and a.stu_id = b.id";
 		List<Record> taskList = Db.find(sql, classId, taskId);
 		if(taskList.size() > 0) {
 			return taskList;
@@ -373,7 +323,7 @@ public class Task extends Model<Task> {
 	 * @return
 	 */
 	public List<Record> teaGetSetGrade(int classId, int taskId) {
-		String sql = "select * from submit_task where class_id = ? and task_id = ? and grade is not null";
+		String sql = "select * from submit_task where class_id = ? and task_id = ? and grade > 0";
 		List<Record> taskList = Db.find(sql, classId, taskId);
 		if(taskList.size() > 0) {
 			return taskList;
@@ -388,7 +338,7 @@ public class Task extends Model<Task> {
 	 * @return
 	 */
 	public List<Record> teaGetNotGrade(int classId, int taskId) {
-		String sql = "select * from submit_task where class_id = ? and task_id = ? and grade is null";
+		String sql = "select * from submit_task where class_id = ? and task_id = ? and grade = 0";
 		List<Record> taskList = Db.find(sql, classId, taskId);
 		if(taskList.size() > 0) {
 			return taskList;
@@ -401,45 +351,67 @@ public class Task extends Model<Task> {
 	 * 2. @param: class_id 和 task_id
 	 * 3. @method: get
 	 */
-	public List<Record> teaGetNotSubTask(int classId, int taskId) {
+	public List<StuTaskInfo> teaGetNotSubTask(int classId, int taskId) {
 		String sql1 = "select a.stu_id, a.stu_name, a.class_name from stu_course a left join submit_task b on a.stu_id = b.stu_id and b.class_id = ? and b.task_id = ? where a.class_id = ? and b.class_id is null";
 		List<Record> taskList = Db.find(sql1, classId, taskId, classId);
+		List<StuTaskInfo> listData = new ArrayList<StuTaskInfo>();
 		if(taskList.size() > 0) {
-			return taskList;
+			String sql = "select email, phone from stu_info where id = ?";
+			for(Record info:taskList){
+				StuTaskInfo taskInfo = new StuTaskInfo();
+				String stu_id = info.getStr("stu_id");
+				
+				taskInfo.setClass_name(info.getStr("class_name"));
+				taskInfo.setStu_id(stu_id);
+				taskInfo.setStu_name(info.getStr("stu_name"));
+				
+				Record pinfo = Db.findFirst(sql, stu_id);
+				if(pinfo != null) {
+					taskInfo.setEmail(pinfo.getStr("email"));
+					taskInfo.setPhone(pinfo.getStr("phone"));
+				}
+				listData.add(taskInfo);
+			}
+			return listData;
 		}
 		return null;
 	}
 	// 老师对作业进行评分
 	// 提交的是该submit_task中的id(primary key)
 	// 和分数(update 当中的分数 grade)
-	public Boolean setGrade(int id, int grade) {
-		String realGrade = null;
-		switch(grade) {
-		case 1:
-			realGrade = "D";
-			break;
-		case 2:
-			realGrade = "C-";
-			break;
-		case 3:
-			realGrade = "C+";
-			break;
-		case 4:
-			realGrade = "B-";
-			break;
-		case 5:
-			realGrade = "B+";
-			break;
-		case 6:
-			realGrade = "A-";
-			break;
-		case 7:
-			realGrade = "A+";
-			break;
-		default:
-			realGrade = null;
+	public Boolean setGrade(int id, int grade, String remark) {
+//		String realGrade = null;
+//		switch(grade) {
+//		case 1:
+//			realGrade = "D";
+//			break;
+//		case 2:
+//			realGrade = "C-";
+//			break;
+//		case 3:
+//			realGrade = "C+";
+//			break;
+//		case 4:
+//			realGrade = "B-";
+//			break;
+//		case 5:
+//			realGrade = "B+";
+//			break;
+//		case 6:
+//			realGrade = "A-";
+//			break;
+//		case 7:
+//			realGrade = "A+";
+//			break;
+//		default:
+//			realGrade = null;
+//		}
+		if(remark != null) {
+			return Db.update("update submit_task set grade = ?, remark = ? where submit_tid = ?", grade, remark, id)>0;
+		} else {
+			return Db.update("update submit_task set grade = ? where submit_tid = ?", grade, id)>0;
 		}
-		return Db.update("update submit_task set grade = ? where submit_tid = ?", realGrade, id)>0;
+		
 	}
 	
 	/**

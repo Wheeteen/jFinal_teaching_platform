@@ -44,7 +44,10 @@ public class CourseController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 
 	}
@@ -73,7 +76,10 @@ public class CourseController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	
@@ -99,7 +105,10 @@ public class CourseController extends Controller {
 		   }
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 		
 	}
@@ -122,7 +131,10 @@ public class CourseController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	
@@ -148,7 +160,10 @@ public class CourseController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	
@@ -164,7 +179,10 @@ public class CourseController extends Controller {
 		  Result<UserRespModel> result = service.getAllCourseById(teaId);
 		  renderJson(result);
 		} else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	

@@ -30,7 +30,7 @@ public class FileInfo extends Model<FileInfo> {
 	}
 	
 	// 老师上传文件到某一门课程中(course_file_info)
-	public int teaUploadFile(int courseId, String fileId, String tea_id, String tea_name){
+	public int teaUploadFile(int courseId, String fileId, String title, String intro, String tea_id, String tea_name){
 		// 先去table img_file_store中查找该fileId是否存在
 		String sql = "select url, filename from img_file_store where id = ?";
 		Record fileRes = Db.findFirst(sql, fileId);
@@ -41,11 +41,15 @@ public class FileInfo extends Model<FileInfo> {
 			String filename = fileRes.getStr("filename");
 			// 存在，所以写入table course_file_info中
 			Timestamp d = new Timestamp(System.currentTimeMillis()); 
-			Record upload = new Record().set("course_id", courseId).set("file_id", fileId).set("url", fileUrl).set("filename", filename).set("tea_id", tea_id).set("tea_name", tea_name).set("create_time", d);
+			Record upload = null;
+			if(intro != null) {
+				upload = new Record().set("course_id", courseId).set("title", title).set("introduction", intro).set("file_id", fileId).set("url", fileUrl).set("filename", filename).set("tea_id", tea_id).set("tea_name", tea_name).set("create_time", d);
+			} else {
+				upload = new Record().set("course_id", courseId).set("title", title).set("file_id", fileId).set("url", fileUrl).set("filename", filename).set("tea_id", tea_id).set("tea_name", tea_name).set("create_time", d);
+			}
 			try {
 				Db.save("course_file_info", upload);
 				return 1;
-//				return 1;
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

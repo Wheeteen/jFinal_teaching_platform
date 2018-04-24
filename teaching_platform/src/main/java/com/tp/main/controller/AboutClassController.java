@@ -39,7 +39,10 @@ public class AboutClassController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+		  JSONObject jsonObject = new JSONObject();
+		  jsonObject.put("token", false);
+		  jsonObject.put("error", userInfo.getError());
+		  renderJson(jsonObject);
 		}
 	}
 	
@@ -74,7 +77,10 @@ public class AboutClassController extends Controller {
 		   }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -94,7 +100,10 @@ public class AboutClassController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -131,7 +140,10 @@ public class AboutClassController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -159,7 +171,10 @@ public class AboutClassController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -186,7 +201,10 @@ public class AboutClassController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -204,7 +222,10 @@ public class AboutClassController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	

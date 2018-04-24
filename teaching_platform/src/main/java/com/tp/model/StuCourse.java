@@ -95,7 +95,7 @@ public class StuCourse extends Model<StuCourse> {
 	
 	// 查找一个class里面的学生
 	public List<Record> getStudentsInClass(int classId) {
-		String sql1 = "select class_name, stu_id, stu_name from stu_course where class_id = ?";
+		String sql1 = "select a.class_name, a.stu_id, a.stu_name, b.email, b.phone from stu_course a, stu_info b where a.class_id = ? and a.stu_id = b.id";
 		List<Record> stuList = Db.find(sql1, classId);
 		if(stuList.size() > 0) {
 			return stuList;

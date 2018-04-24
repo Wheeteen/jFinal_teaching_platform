@@ -40,10 +40,9 @@ public class TaskController extends Controller {
 			  int classId = user.getClass_id();   // class 的 id :  班级的id
 			  String title = user.getTitle();     // 作业的标题
 			  String content = user.getContent(); // 作业的内容
-			  String file_id = user.getFile_id(); // 文件的Id
 			  String end_time = user.getEnd_time(); // 截止时间
 			  
-			  Result<UserRespModel> result = taskService.createTask(classId, title, content, file_id, end_time, id, tea_name);
+			  Result<UserRespModel> result = taskService.createTask(classId, title, content, end_time, id, tea_name);
 			  renderJson(result);
 		    } else {
 			  JSONObject json = new JSONObject();
@@ -52,7 +51,10 @@ public class TaskController extends Controller {
 		   }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -69,14 +71,16 @@ public class TaskController extends Controller {
 			UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			int task_id = user.getTask_id();   // class 的 id :  班级的id
 			String content = user.getContent(); // 作业的内容
-			String file_id = user.getFile_id(); // 文件的Id
 			String end_time = user.getEnd_time(); // 截止时间
 			
-		    Result<UserRespModel> result = taskService.updateTask(task_id, content, file_id, end_time);
+		    Result<UserRespModel> result = taskService.updateTask(task_id, content, end_time);
 		    renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -103,7 +107,10 @@ public class TaskController extends Controller {
 		   }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 		
 	}
@@ -119,7 +126,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -159,7 +169,10 @@ public class TaskController extends Controller {
 		  }
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -179,7 +192,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -199,7 +215,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -218,7 +237,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -233,11 +255,14 @@ public class TaskController extends Controller {
 		  int classId = getParaToInt("class_id");
 		  int taskId = getParaToInt("task_id");
 		  
-		  Result<UserRespModel> result = taskService.teaGetNotSubTask(classId, taskId);
+		  Result<JSONObject> result = taskService.teaGetNotSubTask(classId, taskId);
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -252,17 +277,22 @@ public class TaskController extends Controller {
 			UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			int submit_tid = user.getSubmit_tid();   // submit_task中的id(primary key)
 			int grade = user.getGrade(); // 作业的分数
+			String remark = user.getRemark(); // 作业的评语（可填可不填）
 			
-		    Result<UserRespModel> result = taskService.setGrade(submit_tid, grade);
+		    Result<UserRespModel> result = taskService.setGrade(submit_tid, grade, remark);
 		    renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
 	/**
 	 * 查看该课程某次作业的成绩的分数（10，20，30）
+	 * 没用
 	 */
 	public void getTaskGrade() {
 		UserInfo userInfo = GetHeader.getHeader(getRequest());
@@ -274,12 +304,16 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
 	/**
 	 * 查看该课程所有作业的评分情况（10，20，30）
+	 * 没用
 	 * 以task作为分界线
 	 */
 	public void getClassGrade() {
@@ -291,7 +325,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	/**
@@ -308,7 +345,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 	
@@ -326,7 +366,10 @@ public class TaskController extends Controller {
 		  renderJson(result);
 		}
 		else {
-		  renderJson(userInfo.getError());
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
 		}
 	}
 }

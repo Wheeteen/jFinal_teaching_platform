@@ -24,7 +24,7 @@ public class ClassInfo extends Model<ClassInfo> {
 		/**
 		 * 1. 查询class_name是否已经存在，不能重复
 		 */
-		Integer isClass = getClsName(class_name, course_id);
+		Record isClass = getClsName(class_name, course_id);
 		if(isClass == null){
 			// the class is not found, so create the class
 			// get course_name
@@ -75,14 +75,14 @@ public class ClassInfo extends Model<ClassInfo> {
 	}
 	
 	// judge whether the class has existed
-	public Integer getClsName(String clsName, int cour_id){
-		Record cls = Db.findFirst("select class_id from class_info where course_id = ? and class_name = ?",cour_id, clsName);
+	public Record getClsName(String clsName, int cour_id){
+		Record cls = Db.findFirst("select * from class_info where course_id = ? and class_name = ?",cour_id, clsName);
 		if(cls == null){
 			// the class not found
 			return null;
 		}
 		// existed
-		return cls.getInt("class_id");
+		return cls;
 	}
 	
 	// 该门课所对应的所有班级信息

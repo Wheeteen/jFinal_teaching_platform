@@ -26,10 +26,10 @@ public class AboutClassService {
 		switch(resCls){
 			case 1:
 				// search course id
-				Integer classId = classInfo.getClsName(class_name, course_id);
-				if(classId != null) {
+				Record class_info = classInfo.getClsName(class_name, course_id);
+				if(class_info != null) {
 					HashMap<String, Object> res_cid = new HashMap<String, Object>();
-					res_cid.put("class_id", classId);
+					res_cid.put("class_info", class_info);
 					result = new Result<UserRespModel>(res_cid); // return course_id
 				} else {
 					result = new Result<UserRespModel>(false, "Can't get class_id from db");
