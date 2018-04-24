@@ -1,11 +1,14 @@
 package com.tp.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.CourseInfo;
+import com.tp.clientModel.StuCourseInfo;
 
 public class StuCourse extends Model<StuCourse> {
 	Student student = new Student();
@@ -62,11 +65,30 @@ public class StuCourse extends Model<StuCourse> {
 	 * @param stuId
 	 * @return
 	 */
-	public List<Record> getClassByStuId(String stuId){
+	public List<StuCourseInfo> getClassByStuId(String stuId){
+		List<StuCourseInfo> listData = new ArrayList<StuCourseInfo>();
 		String sql2 = "select a.class_id, a.class_name, b.course_id, b.course_name, b.tea_id, b.tea_name from stu_course a, class_info b where a.stu_id = ? and a.class_id = b.class_id order by a.create_time DESC";
 		List<Record> classList = Db.find(sql2, stuId);
 		if(classList.size()>0){
-			return classList;
+			String sql = "select task_id, title, content, create_time, end_time from task where class_id = ? order by create_time DESC limit 1";
+			for(Record cinfo:classList){
+				StuCourseInfo stuCourseInfo = new StuCourseInfo();
+				int class_id = cinfo.getInt("class_id");
+				
+				stuCourseInfo.setClass_id(class_id);
+				stuCourseInfo.setClass_name(cinfo.getStr("class_name"));
+				stuCourseInfo.setCourse_id(cinfo.getInt("course_id"));
+				stuCourseInfo.setCourse_name(cinfo.getStr("course_name"));
+				stuCourseInfo.setTea_id(cinfo.getStr("tea_id"));
+				stuCourseInfo.setTea_name(cinfo.getStr("tea_name"));
+				
+				List<Record> taskList = Db.find(sql, class_id);
+				if(taskList.size() > 0) {
+					stuCourseInfo.setNewest(taskList);
+				}
+				listData.add(stuCourseInfo);
+			}
+			return listData;
 		}
 		return null;
 	}

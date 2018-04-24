@@ -177,7 +177,7 @@ public class AboutClassController extends Controller {
 		  
 		  // 只有学生再查询是否已经注册了 该 class，否则不浪费功夫
 		  if(type == 1){
-			  Result<UserRespModel> result = service.getClassByStuId(stu_id);
+			  Result<JSONObject> result = service.getClassByStuId(stu_id);
 			  renderJson(result);
 		  } else {
 			  JSONObject json = new JSONObject();

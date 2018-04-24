@@ -20,6 +20,7 @@ public class UserReqModel {
 	private String title; // 布置作业的title
 	private int notice_id; // 公告的id
 	private String end_time; // 提交作业的截止时间
+	private String phone;
 	
 	public String getUsername() {
 		return username;
@@ -136,6 +137,12 @@ public class UserReqModel {
 	}
 	public void setEnd_time(String end_time) {
 		this.end_time = end_time;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	
 }

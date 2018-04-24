@@ -10,7 +10,8 @@ import io.jsonwebtoken.Claims;
 
 public class GetHeader {
 	public static UserInfo getHeader(HttpServletRequest request){
-		String jwt = request.getHeader("Authorization"); // 接收jwt字符串
+//		String jwt = request.getHeader("Authorization"); // 接收jwt字符串
+		String jwt = request.getParameter("token");
 		CheckResult checkResult = Jwt.validateJWT(jwt); // 校验jwt字符串
 		UserInfo user = new UserInfo();
 		if(checkResult.getSuccess() == true){

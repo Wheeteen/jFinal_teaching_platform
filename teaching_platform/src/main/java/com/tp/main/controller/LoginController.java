@@ -73,11 +73,15 @@ public class LoginController extends Controller{
 
 	public void register() {
 		String jsonString = HttpKit.readData(getRequest());
-		UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
-		String id = user.getId(); // 用户的学号or工号
-		String pwd = MD5.MD5(user.getPassword());
-		String username = user.getUsername();
-		int type = user.getType(); 
+//		UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
+//		String id = user.getId(); // 用户的学号or工号
+//		String pwd = user.getPassword();
+//		String username = user.getUsername();
+//		int type = user.getType(); 
+		String id = getPara("id");
+		String pwd = getPara("pwd");
+		String username = getPara("username");
+		int type = getParaToInt("type");
 		
 		Result<UserRespModel> result = new Result<UserRespModel>(false,"user has existed");
 		int status = 0;
@@ -142,8 +146,9 @@ public class LoginController extends Controller{
 		  UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 		  String file_id = user.getFile_id();
 		  String email = user.getEmail();
+		  String phone = user.getPhone();
 		
-		  Result<UserRespModel> result = service.updateUserInfo(id, type, file_id, email);
+		  Result<UserRespModel> result = service.updateUserInfo(id, type, file_id, email, phone);
 		  renderJson(result);
 		}
 		else {

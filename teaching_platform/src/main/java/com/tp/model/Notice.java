@@ -1,17 +1,22 @@
 package com.tp.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.omg.CORBA.SystemException;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.CourseInfo;
+import com.tp.clientModel.NoticeInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.util.Constant;
 import com.tp.util.Result;
 
 public class Notice extends Model<Notice> {
-	
+	StuCourse stuCourse = new StuCourse();
 	/**
 	 * 发布公告
 	 * @param classId
@@ -22,28 +27,12 @@ public class Notice extends Model<Notice> {
 	 * @param tea_name
 	 * @return
 	 */
-	public int createNotice(int classId, String title, String content, String file_id, String tea_id, String tea_name) {
-
-		/**
-		 * 1. 如果fileId不为null（是否已经成功上传作业）
-		 * 2. 先去table img_file_store中查找该fileId是否存在
-		 */
-		String fileUrl = null; // file url
-		String filename = null; // filename
-		if(file_id != null) {
-			String sql = "select url, filename from img_file_store where id = ?";
-			Record fileRes = Db.findFirst(sql, file_id);	
-			if(fileRes != null) {
-				fileUrl = fileRes.getStr("url");
-				filename = fileRes.getStr("filename");
-			}
-		}
-		
+	public int createNotice(int classId, String title, String content, String tea_id, String tea_name) {	
 		// 通过class_id 和 title来查询该用户是否已经创建过同样title的公告了
 		Integer notice_id = getNoticeId(classId, title);
 		if(notice_id == null) {
 			Timestamp d = new Timestamp(System.currentTimeMillis()); 
-			Record rNotice = new Record().set("class_id", classId).set("title", title).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("file_id", file_id).set("filename", filename).set("url", fileUrl).set("create_time", d);		
+			Record rNotice = new Record().set("class_id", classId).set("title", title).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("create_time", d);		
 			try {
 				Db.save("tp_advertise", rNotice);
 				return 1;
@@ -73,21 +62,11 @@ public class Notice extends Model<Notice> {
 		return null;
 	}
 	
-	public int isNoticeId(int notice_id, String file_id) {
-		String sql = "select notice_id, file_id from tp_advertise where notice_id = ?";
+	public int isNoticeId(int notice_id) {
+		String sql = "select notice_id from tp_advertise where notice_id = ?";
 		Record res = Db.findFirst(sql, notice_id);
-		if(res.getInt("notice_id") != null) { // notice_id存在
-			if(file_id == null) {
-				return 0; // 这时没有传文件，只是更新content即可
-			} else {
-				// 传了文件
-				String ori_file_id = res.getStr("file_id");
-				if(file_id.equals(ori_file_id)) {
-					return 0; // 传了文件， 但是跟原来的一样，不用update file_id这些
-				} else {
-					return 1; // 传了文件， file_id与原来的不相等， 要update file_id  filename这些信息
-				}
-			}
+		if(res != null) { // notice_id存在
+			return 1;
 		}
 		return -1; // notice_id不存在
 	}
@@ -98,25 +77,14 @@ public class Notice extends Model<Notice> {
 	 * @param file_id
 	 * @return
 	 */
-	public int updateNotice(int notice_id, String content, String file_id){
+	public int updateNotice(int notice_id, String content){
 		//查询该notice_id是否存在
-		int resId = isNoticeId(notice_id, file_id);
-		switch (resId) {
-		case 0:
+		int resId = isNoticeId(notice_id);
+		if(resId == 1) {
 			return Db.update("update tp_advertise set content =? where notice_id =?", content, notice_id)>0 ? 1 : 0; // 1表示更新成功， 2表示更新失败
-		case 1:
-			String sql = "select url, filename from img_file_store where id = ?";
-			Record fileRes = Db.findFirst(sql, file_id);	
-			String fileUrl = null; // file url
-			String filename = null; // filename
-			if(fileRes != null) {
-				fileUrl = fileRes.getStr("url");
-				filename = fileRes.getStr("filename");
-			}
-			return Db.update("update tp_advertise set content =?, file_id = ?, filename = ?, url = ? where notice_id =?", content, file_id, filename, fileUrl, notice_id)>0 ? 1 : 0;
-		default:
-			return -1; // notice_id不存在
-		}	
+		}
+		return -1;
+		
 	}
 	/**
 	 * 1. 删除公告
@@ -143,6 +111,75 @@ public class Notice extends Model<Notice> {
 		List<Record> taskList = Db.find(sql, classId, vt);
 		if(taskList.size() > 0) {
 			return taskList;
+		}
+		return null;
+	}
+	
+	/**
+	 * 学生首页，要显示最近五条公告，来自不同课程
+	 */
+	public List<NoticeInfo> getFiveStuNotice(String stu_id) {
+		// 由stu_id来查询该学生选了什么课
+		String sql2 = "select a.class_id, a.class_name, b.course_id, b.course_name, b.tea_id, b.tea_name from stu_course a, class_info b where a.stu_id = ? and a.class_id = b.class_id order by a.create_time DESC";
+		List<Record> classList = Db.find(sql2, stu_id);
+		if(classList != null) {
+			List<NoticeInfo> listData = new ArrayList<NoticeInfo>();
+			int count = classList.size();
+			String sql = "select * from tp_advertise where class_id =? order by create_time DESC limit ?";
+			for(Record info: classList) {
+				NoticeInfo noticeInfo = new NoticeInfo();
+				
+				int class_id = info.getInt("class_id");
+				
+				int course_id = info.getInt("course_id");
+				String class_name = info.getStr("class_name");
+				String course_name = info.getStr("course_name");
+				List<Record> noticeList = null;
+				
+				switch (count) {
+				case 1:
+					noticeList = Db.find(sql, class_id, 5);
+					break;
+				case 2:
+					noticeList = Db.find(sql, class_id, 3);
+					break;
+				case 3:
+					noticeList = Db.find(sql, class_id, 2);
+					break;
+				default:
+					noticeList = Db.find(sql, class_id, 1);
+					break;
+				}
+				if(noticeList.size()>0) {
+					for(Record ninfo: noticeList){
+						noticeInfo.setCourse_id(course_id);
+						noticeInfo.setClass_name(class_name);
+						noticeInfo.setCourse_name(course_name);
+						noticeInfo.setClass_id(class_id);
+						noticeInfo.setContent(ninfo.getStr("content"));
+						noticeInfo.setNotice_id(ninfo.getInt("notice_id"));
+						noticeInfo.setTea_id(ninfo.getStr("tea_id"));
+						noticeInfo.setTitle(ninfo.getStr("title"));
+						noticeInfo.setTea_name(ninfo.getStr("tea_name"));
+						noticeInfo.setCreate_time(ninfo.getTimestamp("create_time"));
+						
+						listData.add(noticeInfo);
+					}
+				}
+				
+			}
+			return listData;
+		}
+		return null;
+	}
+	/**
+	 * 老师首页，显示老师发布的最新的10条公告
+	 */
+	public List<Record> getFiveTeaNotice(String tea_id) {
+		String sql = "select * from tp_advertise where tea_id = ? order by create_time DESC limit 10";
+		List<Record> listData = Db.find(sql, tea_id);
+		if(listData.size()>0){
+			return listData;
 		}
 		return null;
 	}

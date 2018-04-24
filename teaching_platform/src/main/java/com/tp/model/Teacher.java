@@ -56,7 +56,7 @@ public class Teacher extends Model<Teacher> {
     }
     
     // modify user info: 修改用户信息
-    public boolean modifyUserInfo(String id, String file_id, String email) {
+    public boolean modifyUserInfo(String id, String file_id, String email, String phone) {
     	// 先查看fileId存不存在（是否已经成功上传作业）
 		// 先去table img_file_store中查找该fileId是否存在
     	if(file_id != null) {
@@ -66,10 +66,18 @@ public class Teacher extends Model<Teacher> {
     		if(fileRes != null) {
     			fileUrl = fileRes.getStr("url");
     		}
-    		 return Db.update("update tea_info set imgUrl=?, email = ? where id=?",fileUrl, email, id) > 0;
+    		if(phone != null) {
+    			return Db.update("update tea_info set imgUrl=?, email = ?, phone = ? where id=?",fileUrl, email, phone, id) > 0;
+    		} else {
+    			return Db.update("update tea_info set imgUrl=?, email = ? where id=?",fileUrl, email, id) > 0;
+    		}
     	}
     	else {
-    		return Db.update("update tea_info set email = ? where id=?", email, id) > 0;
+    		if(phone != null) {
+    			return Db.update("update tea_info set email = ?, phone = ? where id=?", email, phone, id) > 0;
+    		} else {
+    			return Db.update("update tea_info set email = ? where id=?", email, id) > 0;
+    		}
     	}
     }
 }

@@ -116,25 +116,27 @@ public class LoginService {
 			String username = info.getStr("username");
 			String imgUrl = info.getStr("imgUrl");
 			String email = info.getStr("email");
+			String  phone = info.getStr("phone");
 			mes.put("id", id);
 			mes.put("username", username);
 			mes.put("imgUrl", imgUrl);
 			mes.put("email", email);
+			mes.put("phone", phone);
 			result = new Result<UserRespModel>(mes);
 		}
 		return result;
 	}
 	// 修改用户信息
 	// modify user info
-	public Result<UserRespModel> updateUserInfo(String id, int type, String file_id, String email){
+	public Result<UserRespModel> updateUserInfo(String id, int type, String file_id, String email, String phone){
 		Boolean modifyRes = false;
 		Result<UserRespModel> result = null;
 		
 		if(type == 1) {
-			modifyRes = student.modifyUserInfo(id, file_id, email);
+			modifyRes = student.modifyUserInfo(id, file_id, email, phone);
 		}
 		if(type == 2) {
-			modifyRes = teacher.modifyUserInfo(id, file_id, email);
+			modifyRes = teacher.modifyUserInfo(id, file_id, email, phone);
 		}
 		result = new Result<UserRespModel>(false, "something wrong about db");
 		if(modifyRes) {

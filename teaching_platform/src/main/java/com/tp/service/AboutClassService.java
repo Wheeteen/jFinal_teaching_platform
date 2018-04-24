@@ -3,7 +3,9 @@ package com.tp.service;
 import java.util.HashMap;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.StuCourseInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.model.ClassInfo;
 import com.tp.model.StuCourse;
@@ -129,16 +131,16 @@ public class AboutClassService {
 	 * 3. @param: none(stu_id)
 	 * 4. @method: GET
 	 */
-	public Result<UserRespModel> getClassByStuId(String stuId){
-		Result<UserRespModel> result = null;
-		UserRespModel userRespModel = new UserRespModel();
-		List<Record> classList = stuCourse.getClassByStuId(stuId);
-		result = new Result<UserRespModel>(false, "The student hasn't registered any class"); // 该班级还没有选
+	public Result<JSONObject> getClassByStuId(String stuId){
+		Result<JSONObject> result = null;
+		List<StuCourseInfo> classList = stuCourse.getClassByStuId(stuId);
+		result = new Result<JSONObject>(false, "The student hasn't registered any class"); // 该班级还没有选
 		if(classList != null) {
 			int count = classList.size();
-			userRespModel.setCount(count);
-			userRespModel.setList(classList);
-			result = new Result<UserRespModel>(userRespModel); // 选了该班级, have chosen the class
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("list", classList);
+			jsonObject.put("count", count);
+			result = new Result<JSONObject>(jsonObject); // 选了该班级, have chosen the class
 		}
 		return result;
 	}

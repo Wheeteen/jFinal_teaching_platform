@@ -31,9 +31,8 @@ public class NoticeController extends Controller {
 			  int class_id = user.getClass_id(); // 班级id
 			  String title = user.getTitle(); 
 			  String content = user.getContent();
-			  String file_id = user.getFile_id(); // 若有上传文件，传文件的Id
 			  
-			  Result<UserRespModel> result = service.createNotice(class_id, title, content, file_id, id, tea_name);
+			  Result<UserRespModel> result = service.createNotice(class_id, title, content, id, tea_name);
 			  renderJson(result);
 		  } else {
 			  JSONObject json = new JSONObject();
@@ -60,9 +59,8 @@ public class NoticeController extends Controller {
 			UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			int notice_id = user.getNotice_id();   // 公告 的 id 
 			String content = user.getContent(); // 公告的内容
-			String file_id = user.getFile_id(); // 若有上传文件，传文件的Id
 			
-		    Result<UserRespModel> result = service.updateNotice(notice_id, content, file_id);
+		    Result<UserRespModel> result = service.updateNotice(notice_id, content);
 		    renderJson(result);
 		}
 		else {
@@ -97,6 +95,23 @@ public class NoticeController extends Controller {
 		if(userInfo.isSuccess()){
 		  int classId = getParaToInt("class_id");
 		  Result<UserRespModel> result = service.getNoticeByClassId(classId);
+		  renderJson(result);
+		}
+		else {
+		  renderJson(userInfo.getError());
+		}
+	}
+	
+	/**
+	 * 学生首页，要显示最近五条公告，来自不同课程
+	 */
+	public void getFiveNotice(){
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+		  String user_id = userInfo.getId();	
+		  int type = userInfo.getType();
+		  
+		  Result<JSONObject> result = service.getFiveNotice(user_id, type);
 		  renderJson(result);
 		}
 		else {

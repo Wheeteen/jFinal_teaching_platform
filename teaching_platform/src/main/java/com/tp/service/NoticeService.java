@@ -3,7 +3,10 @@ package com.tp.service;
 import java.util.HashMap;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Record;
+import com.tp.clientModel.CourseInfo;
+import com.tp.clientModel.NoticeInfo;
 import com.tp.clientModel.UserRespModel;
 import com.tp.model.Notice;
 import com.tp.util.Result;
@@ -21,9 +24,9 @@ public class NoticeService {
 	 * @param tea_name
 	 * @return
 	 */
-	public Result<UserRespModel> createNotice(int classId, String title, String content, String file_id, String tea_id, String tea_name) {
+	public Result<UserRespModel> createNotice(int classId, String title, String content, String tea_id, String tea_name) {
 		Result<UserRespModel> result = null;
-		int noticeRes = notice.createNotice(classId, title, content, file_id, tea_id, tea_name);
+		int noticeRes = notice.createNotice(classId, title, content, tea_id, tea_name);
 		switch (noticeRes) {
 		case 0:
 			result = new Result<UserRespModel>(false, "DB wrong");
@@ -54,9 +57,9 @@ public class NoticeService {
 	 * @param file_id
 	 * @return
 	 */
-	public Result<UserRespModel> updateNotice(int notice_id, String content, String file_id){
+	public Result<UserRespModel> updateNotice(int notice_id, String content){
 		Result<UserRespModel> result = null;
-		int res = notice.updateNotice(notice_id, content, file_id);
+		int res = notice.updateNotice(notice_id, content);
 		switch (res) {
 		case 1:
 			result = new Result<UserRespModel>(true);
@@ -100,6 +103,33 @@ public class NoticeService {
 			userRespModel.setCount(count);
 			result = new Result<UserRespModel>(userRespModel);
 		}
+		return result;
+	}
+	
+	/**
+	 * 学生首页，要显示最近五条公告，来自不同课程
+	 */
+	public Result<JSONObject> getFiveNotice(String user_id, int type) {
+		Result<JSONObject> result = null;
+		List<NoticeInfo> stuList = null;
+		List<Record> teaList = null;
+		result = new Result<JSONObject>(false, "No notice");
+		if(type == 1){
+			stuList = notice.getFiveStuNotice(user_id);
+			if(stuList != null){
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("list", stuList);
+				result = new Result<JSONObject>(jsonObject);
+			}
+		} else {
+			teaList = notice.getFiveTeaNotice(user_id);
+			if(teaList != null){
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("list", teaList);
+				result = new Result<JSONObject>(jsonObject);
+			}
+		}
+
 		return result;
 	}
 }
