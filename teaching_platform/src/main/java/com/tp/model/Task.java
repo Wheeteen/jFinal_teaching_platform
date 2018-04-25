@@ -24,23 +24,34 @@ public class Task extends Model<Task> {
 	 * @param content
 	 * @return
 	 */
-	public int createTask(int classId, String title, String content, String end_time, String tea_id, String tea_name) {
+	public int createTask(int classId, String title, String content, long end_time, String tea_id, String tea_name) {
 		// 查看该class_id下是否已经创建了同样title的作业
 		Integer taskRes = getTaskId(classId, title);
 		if(taskRes == null){
 			Timestamp d = new Timestamp(System.currentTimeMillis()); // 当前时间
-			//把string转化为date
-			SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
-			  try {
-				Timestamp endTime = new Timestamp (fmt.parse(end_time).getTime());
-				Record task = new Record().set("class_id", classId).set("title", title).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("create_time", d).set("end_time", endTime);
+			Timestamp endTime = new Timestamp (end_time);
+			Record task = new Record().set("class_id", classId).set("title", title).set("tea_id", tea_id).set("tea_name", tea_name).set("content", content).set("create_time", d).set("end_time", endTime);
+			
+			try {
 				Db.save("task", task);
 				return 1;
-			} catch (ParseException e) {
-				 // TODO Auto-generated catch block
+			} catch (Exception e) {
+				// TODO: handle exception
 				e.printStackTrace();
 				return 0;
 			}
+			//把string转化为date
+//			SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
+//			  try {
+//				System.out.println(fmt.parse(end_time).getTime());
+				
+//				Db.save("task", task);
+//				return 1;
+//			} catch (ParseException e) {
+//				 // TODO Auto-generated catch block
+//				e.printStackTrace();
+//				return 0;
+//			}
 		}
 		// 该次作业已经创建(作业的title已经存在)
 		return -1;
@@ -52,27 +63,12 @@ public class Task extends Model<Task> {
 	 * @param content
 	 * @return
 	 */
-	public int updateTask(int task_id, String content, String end_time){
+	public int updateTask(int task_id, String content, long end_time){
 		//查询该task_id是否存在
 		int taskRes = isTaskFile(task_id);
 		if(taskRes == 1){
-			// task_id存在，所以可以update
-			if(end_time!=null) {
-				// 更新content和 end_time
-				SimpleDateFormat fmt =new SimpleDateFormat("yyyy-MM-dd"); //24小时制
-				Timestamp endTime;
-				try {
-					endTime = new Timestamp (fmt.parse(end_time).getTime());
-					return Db.update("update task set content =?, end_time = ? where task_id =?", content, endTime, task_id)>0 ? 1: 0; // update成功1，否则为0
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return 0;
-				}
-				
-			} else {
-				return Db.update("update task set content =? where task_id =?", content, task_id)>0 ? 1: 0; // update成功1，否则为0
-			}
+			Timestamp endTime = new Timestamp (end_time);
+			return Db.update("update task set content =?, end_time = ? where task_id =?", content, endTime, task_id)>0 ? 1: 0; // update成功1，否则为0
 		}
 		else {
 			return -1;
@@ -276,7 +272,7 @@ public class Task extends Model<Task> {
 	 * @return
 	 */
 	public List<Record> getAllStuTask(int classId, String studentId) {
-		String sql1 = "select a.title, a.content, b.submit_tid, b.task_id, b.filename, b.url, b.grade from task a, submit_task b where b.class_id = ? and b.stu_id = ? and a.task_id = b.task_id";
+		String sql1 = "select a.title, a.content, a.end_time, a.tea_id, a.tea_name, b.submit_tid, b.task_id, b.filename, b.url, b.grade, b.remark from task a, submit_task b where b.class_id = ? and b.stu_id = ? and a.task_id = b.task_id";
 		List<Record> taskList = Db.find(sql1, classId, studentId);
 		if(taskList.size() > 0) {
 			return taskList;

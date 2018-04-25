@@ -40,7 +40,7 @@ public class TaskController extends Controller {
 			  int classId = user.getClass_id();   // class 的 id :  班级的id
 			  String title = user.getTitle();     // 作业的标题
 			  String content = user.getContent(); // 作业的内容
-			  String end_time = user.getEnd_time(); // 截止时间
+			  long end_time = user.getEnd_time(); // 截止时间
 			  
 			  Result<UserRespModel> result = taskService.createTask(classId, title, content, end_time, id, tea_name);
 			  renderJson(result);
@@ -71,7 +71,7 @@ public class TaskController extends Controller {
 			UserReqModel user =  JSONObject.parseObject(jsonString, UserReqModel.class);
 			int task_id = user.getTask_id();   // class 的 id :  班级的id
 			String content = user.getContent(); // 作业的内容
-			String end_time = user.getEnd_time(); // 截止时间
+			long end_time = user.getEnd_time(); // 截止时间
 			
 		    Result<UserRespModel> result = taskService.updateTask(task_id, content, end_time);
 		    renderJson(result);

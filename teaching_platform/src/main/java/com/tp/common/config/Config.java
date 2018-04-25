@@ -13,7 +13,6 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
 import com.tp.common.config.route.BackendRoutes;
-import com.tp.index.index;
 import com.tp.interceptor.LoginInterceptor;
 import com.tp.model._MappingKit;
 

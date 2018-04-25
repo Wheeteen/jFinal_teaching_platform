@@ -8,7 +8,6 @@ import com.jfinal.plugin.activerecord.Record;
 import com.tp.clientModel.UserInfo;
 import com.tp.clientModel.UserReqModel;
 import com.tp.clientModel.UserRespModel;
-import com.tp.model.User;
 import com.tp.service.LoginService;
 import com.tp.util.GetHeader;
 import com.tp.util.Jwt;

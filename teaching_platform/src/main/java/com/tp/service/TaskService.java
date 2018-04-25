@@ -21,7 +21,7 @@ public class TaskService {
 	 * @param content
 	 * @return
 	 */
-	public Result<UserRespModel> createTask(int classId, String title, String content, String end_time,String tea_id, String tea_name) {
+	public Result<UserRespModel> createTask(int classId, String title, String content, long end_time,String tea_id, String tea_name) {
 		Result<UserRespModel> result = null;
 		int taskRes = task.createTask(classId, title, content, end_time, tea_id, tea_name);
 		switch (taskRes) {
@@ -46,7 +46,7 @@ public class TaskService {
 		return result;
 	}
 	
-	public Result<UserRespModel> updateTask(int task_id, String content, String end_time){
+	public Result<UserRespModel> updateTask(int task_id, String content, long end_time){
 		Result<UserRespModel> result = null;
 		int res = task.updateTask(task_id, content, end_time);
 		switch (res) {
