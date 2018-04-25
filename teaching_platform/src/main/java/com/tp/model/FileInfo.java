@@ -59,6 +59,22 @@ public class FileInfo extends Model<FileInfo> {
 		// fileId不存在
 		return -1;
 	}
+	
+	/**
+	 * 删除教学资源
+	 * @param file_id
+	 * @method get
+	 */
+	public int deleteCourseFile(String file_id) {
+		String sql = "delete from course_file_info where file_id = ?";
+		String sql1 = "delete from img_file_store where id = ?";
+		Boolean updateRes1 = Db.update(sql,file_id)>0;
+		Boolean updateRes2 = Db.update(sql1, file_id)>0;
+		if(updateRes1 && updateRes1) {
+			return 1; // delete success
+		}
+		return 0;//delete false,something wrong with db
+	}
 	// 取出该门课的所有文件(by teaId and course_name)
 	public List<Record> getFilenameByTea(String teaId, String course_name){
 		Record res = Db.findFirst("select course_id from course where tea_id = ? and course_name = ?",teaId, course_name);

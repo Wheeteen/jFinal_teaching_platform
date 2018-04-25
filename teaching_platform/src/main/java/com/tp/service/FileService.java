@@ -84,11 +84,8 @@ public class FileService {
 		int res = fileInfo.teaUploadFile(courseId, fileId, title, intro, tea_id, tea_name);
 		
 		switch(res){
-		case -1:
-			result = new Result<UserRespModel>(false, "The file_id doesn't exist");
-			break;
 		case 0:
-			result = new Result<UserRespModel>(false, "Something wrong about inserting data into DB");
+			result = new Result<UserRespModel>(false, "The file_id doesn't exist");
 			break;
 		case 1:
 			result = new Result<UserRespModel>(true);
@@ -97,6 +94,20 @@ public class FileService {
 		return result;
 	}
 	
+	/**
+	 * 删除教学资源
+	 * @param file_id
+	 * @method get
+	 */
+	public Result<UserRespModel> deleteCourseFile(String file_id) {
+		Result<UserRespModel> result = null;
+		int res = fileInfo.deleteCourseFile(file_id);
+		result = new Result<UserRespModel>(false, "file_id is not found");
+		if(res == 1){
+			result = new Result<UserRespModel>(true);
+		}
+		return result;
+	}
 	// 取出该门课的所有文件 (by teaId and course_name)
 	public Result<UserRespModel> getFilenameByTea(String teaId, String course_name){
 		Result<UserRespModel> result = null;

@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class Jwt {
 	
-	// JWT的组成：头部(header)  载荷(Clainms) 签名 (signature)
+	// JWT的组成：头部(header)  载荷(Claims) 签名 (signature)
 	/**
 	 * 1. Header: {"typ":"JWT", "alg":"HS256"}
 	 * 2. Claims: {"sub": "用户","iss":"签发者", "exp":1496296411, "userid":1234}
@@ -115,15 +115,15 @@ public class Jwt {
             checkResult.setClaims(claims);
         } 
         catch (ExpiredJwtException e) {
-            checkResult.setError("The user has expired.");
+            checkResult.setError("The user has expired."); // 用户过期
             checkResult.setSuccess(false);
         } 
         catch (SignatureException e) {
-            checkResult.setError("The signature is wrong");
+            checkResult.setError("The signature is wrong"); // 签名有误
             checkResult.setSuccess(false);
         } 
         catch (Exception e) {
-            checkResult.setError("Validation is wrong");
+            checkResult.setError("Validation is wrong"); // 认证有误
             checkResult.setSuccess(false);
         }
         return checkResult;

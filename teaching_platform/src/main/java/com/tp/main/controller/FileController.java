@@ -95,6 +95,25 @@ public class FileController extends Controller {
 		}
 	}
 	
+	/**
+	 * 删除教学资源
+	 * @param file_id
+	 * @method get
+	 */
+	public void deleteCourseFile() {
+		UserInfo userInfo = GetHeader.getHeader(getRequest());
+		if(userInfo.isSuccess()){
+			String file_id = getPara("file_id");
+		    Result<UserRespModel> result = service.deleteCourseFile(file_id);
+		    renderJson(result);
+		}
+		else {
+			JSONObject jsonObject = new JSONObject();
+			  jsonObject.put("token", false);
+			  jsonObject.put("error", userInfo.getError());
+			  renderJson(jsonObject);
+		}
+	}
 	// get filename(image or file) by teaId and courseName
     // 取出一门课中所有的上传的文件
 	/**
